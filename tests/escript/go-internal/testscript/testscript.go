@@ -677,6 +677,7 @@ func (ts *TestScript) buildExecCmd(command string, args ...string) (*exec.Cmd, c
 	}
 	//ts.ctxt, _ = context.WithTimeout(context.Background(), timewait)
 	//return exec.CommandContext(ts.ctxt, command, args...), nil
+	fmt.Printf("Creating context for cmd=%s with timeout: %v\n", command, timewait)
 	ctx, cancelFunc := context.WithTimeout(context.Background(), timewait)
 	return exec.CommandContext(ctx, command, args...), cancelFunc, nil
 }
