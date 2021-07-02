@@ -44,16 +44,19 @@ stdout '10.2.100.1  netmask 255.255.255.0'
 stdout '10.2.200.1  netmask 255.255.255.0'
 
 # Deploy app1 and connect it to VLAN 100
-eden pod deploy -n app1 --memory=512MB --networks=nat --networks=switch -p 8028:80 --vlan=switch:100 --metadata='url={{$test_data}}' {{$image}}
+{{$app1_mac := "00:01:02:03:04:01"}}
+eden pod deploy -n app1 --memory=512MB --networks=nat --networks=switch:{{$app1_mac}} -p 8028:80 --vlan=switch:100 --metadata='url={{$test_data}}' {{$image}}
 test eden.app.test -test.v -timewait 10m RUNNING app1
-exec -t 5m bash wait_and_get_ip.sh app1 8028
+exec -t 2m bash wait_and_get_ifconfig.sh app1 8028
+exec -t 5m bash wait_and_get_ip.sh app1 8028 {{$app1_mac}}
 grep 'app1_ip=10.2.100.\d+' .env
 source .env
 
 # Deploy app2 and connect it to VLAN 100
-eden pod deploy -n app2 --memory=512MB --networks=nat --networks=switch -p 8029:80 --vlan=switch:100 --metadata="url=http://${app1_ip}/user-data.html" {{$image}}
+{{$app2_mac := "00:01:02:03:04:02"}}
+eden pod deploy -n app2 --memory=512MB --networks=nat --networks=switch:{{$app2_mac}} -p 8029:80 --vlan=switch:100 --metadata="url=http://${app1_ip}/user-data.html" {{$image}}
 test eden.app.test -test.v -timewait 10m RUNNING app2
-exec -t 5m bash wait_and_get_ip.sh app2 8029
+exec -t 5m bash wait_and_get_ip.sh app2 8029 {{$app2_mac}}
 grep 'app2_ip=10.2.100.\d+' .env
 source .env
 
@@ -62,9 +65,10 @@ exec -t 5m bash wait_and_get_recv_data.sh app2 8029
 stdout '{{$test_data}}'
 
 # Deploy app3 and connect it to VLAN 200
-eden pod deploy -n app3 --memory=512MB --networks=nat --networks=switch -p 8030:80 --vlan=switch:200 --metadata="url=http://${app1_ip}/user-data.html" {{$image}}
+{{$app3_mac := "00:01:02:03:04:03"}}
+eden pod deploy -n app3 --memory=512MB --networks=nat --networks=switch:{{$app3_mac}} -p 8030:80 --vlan=switch:200 --metadata="url=http://${app1_ip}/user-data.html" {{$image}}
 test eden.app.test -test.v -timewait 10m RUNNING app3
-exec -t 5m bash wait_and_get_ip.sh app3 8030
+exec -t 5m bash wait_and_get_ip.sh app3 8030 {{$app3_mac}}
 grep 'app3_ip=10.2.200.\d+' .env
 source .env
 
@@ -73,9 +77,10 @@ exec -t 5m bash wait_and_get_recv_data.sh app3 8030
 ! stdout '{{$test_data}}'
 
 # Deploy app4 outside of VLANs
-eden pod deploy -n app4 --memory=512MB --networks=nat --networks=switch -p 8031:80 --metadata="url=http://${app1_ip}/user-data.html" {{$image}}
+{{$app4_mac := "00:01:02:03:04:04"}}
+eden pod deploy -n app4 --memory=512MB --networks=nat --networks=switch:{{$app4_mac}} -p 8031:80 --metadata="url=http://${app1_ip}/user-data.html" {{$image}}
 test eden.app.test -test.v -timewait 10m RUNNING app4
-exec -t 5m bash wait_and_get_ip.sh app4 8031
+exec -t 5m bash wait_and_get_ip.sh app4 8031 {{$app4_mac}}
 grep 'app4_ip=10.2.0.\d+' .env
 source .env
 
@@ -84,10 +89,10 @@ exec -t 5m bash wait_and_get_recv_data.sh app4 8031
 ! stdout '{{$test_data}}'
 
 # Modify app4 and move it to the VLAN 100
-eden pod modify app4 --networks=nat --networks=switch -p 8031:80 --vlan=switch:100
+eden pod modify app4 --networks=nat --networks=switch:{{$app4_mac}} -p 8031:80 --vlan=switch:100
 exec sleep 15
 test eden.app.test -test.v -timewait 10m RUNNING app4
-exec -t 5m bash wait_and_get_ip.sh app4 8031
+exec -t 5m bash wait_and_get_ip.sh app4 8031 {{$app4_mac}}
 grep 'app4_ip=10.2.100.\d+' .env
 source .env
 
@@ -148,6 +153,7 @@ curl -m 10 $address
 
 APP=$1
 PORT=$2
+MAC=$3
 EDEN={{EdenConfig "eden.root"}}/{{EdenConfig "eden.bin-dist"}}/{{EdenConfig "eden.eden-bin"}}
 HOST=$($EDEN eve ip)
 
@@ -157,9 +163,8 @@ function get_ip {
     if [ -z "$ifconfig" ]; then
         return 1
     fi
-    interfaces=$(echo "$ifconfig" | grep "^\w" | grep -v LOOPBACK | cut -d: -f1)
-    eth1=$(echo "$interfaces" | awk 'NR==2')
-    IP=$(echo "$ifconfig" | grep "^${eth1}: " -A 1 | awk '/inet / {print $2}' | cut -d"/" -f1)
+    interface=$(echo "$ifconfig" | awk -v filter="ether $MAC" '$0 ~ filter {print}' RS="\n\n")
+    IP=$(echo "$interface" | awk '/inet / {print $2}' | cut -d"/" -f1)
     if [ ! -z "$IP" ]; then
         echo "IP address of $APP is: $IP"
         echo "${APP}_ip=$IP" >.env
