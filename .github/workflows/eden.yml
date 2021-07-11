@@ -25,14 +25,17 @@ jobs:
       - name: setup
         run: |
           sudo apt update
-          sudo apt install -y qemu-utils qemu-system-x86 jq
+          sudo apt install -y qemu-utils qemu-system-x86 jq bridge-utils uml-utilities xinetd
       - name: build eden
         run: |
           make build-tests
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: run
         run: |
           ./eden config add default
           ./eden config set default --key=eve.accel --value=false
+          ./eden config set default --key eve.log-level --value debug
           echo > tests/workflow/testdata/eden_stop.txt
           ./eden test ./tests/workflow -v debug
       - name: Collect logs

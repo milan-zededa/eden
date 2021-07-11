@@ -37,7 +37,9 @@ eden+ports.sh 2223:2223 2224:2224 5912:5902 5911:5901 8027:8027 8028:8028 8029:8
 
 {{if (ne $setup "n")}}
 /bin/echo Eden start (02/{{$tests}})
+sudo bash -x {{EdenPath "scripts/shell/bridge.sh"}}
 eden.escript.test -test.run TestEdenScripts/eden_start
+sudo bash -x {{EdenPath "scripts/shell/bridge-portmaps.sh"}}
 /bin/echo Eden onboard (03/{{$tests}})
 eden.escript.test -test.run TestEdenScripts/eden_onboard
 {{end}}
@@ -81,6 +83,14 @@ eden.escript.test -testdata ../escript/testdata/ -test.run TestEdenScripts/fail_
 eden.escript.test -testdata ../network/testdata/ -test.run TestEdenScripts/network_test
 /bin/echo Eden basic VLAN test (16.1/{{$tests}})
 eden.escript.test -testdata ../network/testdata/ -test.run TestEdenScripts/vlans
+
+
+
+/bin/echo Eden Network portmap test (XXX/{{$tests}})
+eden.escript.test -testdata ../eclient/testdata/ -test.run TestEdenScripts/port_forward
+
+
+
 /bin/echo Eden basic volumes test (17.1/{{$tests}})
 eden.escript.test -testdata ../volume/testdata/ -test.run TestEdenScripts/volumes_test
 /bin/echo Eden sftp volumes test (17.2/{{$tests}})

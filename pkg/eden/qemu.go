@@ -7,7 +7,6 @@ import (
 	"net"
 	"regexp"
 	"runtime"
-	"strconv"
 	"strings"
 
 	"github.com/lf-edge/eden/pkg/defaults"
@@ -18,6 +17,7 @@ import (
 //StartEVEQemu function run EVE in qemu
 func StartEVEQemu(qemuARCH, qemuOS, eveImageFile, qemuSMBIOSSerial string, eveTelnetPort, qemuMonitorPort int, qemuHostFwd map[string]string,
 	qemuAccel bool, qemuConfigFile, logFile, pidFile string, foregroud bool) (err error) {
+
 	qemuCommand := ""
 	qemuOptions := "-display none -nodefaults -no-user-config "
 	qemuOptions += fmt.Sprintf("-serial chardev:char0 -chardev socket,id=char0,port=%d,host=localhost,server,nodelay,nowait,telnet,logfile=%s ", eveTelnetPort, logFile)
@@ -27,13 +27,9 @@ func StartEVEQemu(qemuARCH, qemuOS, eveImageFile, qemuSMBIOSSerial string, eveTe
 	if qemuMonitorPort != 0 {
 		qemuOptions += fmt.Sprintf("-monitor tcp:localhost:%d,server,nowait  ", qemuMonitorPort)
 	}
-	nets, err := utils.GetSubnetsNotUsed(1)
-	if err != nil {
-		return fmt.Errorf("StartEVEQemu: %s", err)
-	}
 	offset := 0
-	network := nets[0].Subnet
-	qemuOptions += fmt.Sprintf("-netdev user,id=eth%d,net=%s,dhcpstart=%s,ipv6=off", 0, network, nets[0].FirstAddress)
+	qemuOptions += fmt.Sprintf("-netdev tap,id=eth0,ifname=eve-tap0,script=no,downscript=no")
+	/*
 	for k, v := range qemuHostFwd {
 		origPort, err := strconv.Atoi(k)
 		if err != nil {
@@ -47,10 +43,12 @@ func StartEVEQemu(qemuARCH, qemuOS, eveImageFile, qemuSMBIOSSerial string, eveTe
 		}
 		qemuOptions += fmt.Sprintf(",hostfwd=tcp::%d-:%d", origPort+offset, newPort+offset)
 	}
-	qemuOptions += fmt.Sprintf(" -device virtio-net-pci,netdev=eth%d ", 0)
+	*/
+	qemuOptions += fmt.Sprintf(" -device virtio-net-pci,netdev=eth0,mac=02:00:00:12:34:56 ")
 	offset += 10
 
-	qemuOptions += fmt.Sprintf("-netdev user,id=eth%d,net=%s,dhcpstart=%s,ipv6=off", 1, network, nets[0].SecondAddress)
+	qemuOptions += fmt.Sprintf("-netdev tap,id=eth1,ifname=eve-tap1,script=no,downscript=no")
+	/*
 	for k, v := range qemuHostFwd {
 		origPort, err := strconv.Atoi(k)
 		if err != nil {
@@ -64,7 +62,8 @@ func StartEVEQemu(qemuARCH, qemuOS, eveImageFile, qemuSMBIOSSerial string, eveTe
 		}
 		qemuOptions += fmt.Sprintf(",hostfwd=tcp::%d-:%d", origPort + offset, newPort + offset)
 	}
-	qemuOptions += fmt.Sprintf(" -device e1000,netdev=eth%d ", 1)
+	*/
+	qemuOptions += fmt.Sprintf(" -device e1000,netdev=eth1,mac=02:00:00:12:34:57 ")
 
 	if qemuOS == "" {
 		qemuOS = runtime.GOOS
