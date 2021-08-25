@@ -145,7 +145,7 @@ done
 -- local-manager-start.sh --
 EDEN={{EdenConfig "eden.root"}}/{{EdenConfig "eden.bin-dist"}}/{{EdenConfig "eden.eden-bin"}}
 HOST=$($EDEN eve ip)
-{{template "ssh"}}$HOST -p $1 '/root/local_manager --token={{template "profile_server_token"}} --file={{template "profile_server_file"}} &>/dev/null &'
+{{template "ssh"}}$HOST -p $1 '/root/local_manager --token={{template "profile_server_token"}} --profile={{template "profile_server_file"}} &>/dev/null &'
 
 -- local-manager-profile.sh --
 EDEN={{EdenConfig "eden.root"}}/{{EdenConfig "eden.bin-dist"}}/{{EdenConfig "eden.eden-bin"}}

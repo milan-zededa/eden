@@ -1,0 +1,135 @@
+# Test airplane mode.
+# Currently all our device models are defined without any wireless network adapter.
+# As a consequence this test covers merely message exchange between the local server
+# and some involved zedbox agents, not the actual radio ON/OFF switch.
+
+{{define "port"}}2223{{end}}
+{{define "token"}}server_token_123{{end}}
+{{define "airplane_mode_config_file"}}/mnt/airplane-mode{{end}}
+{{define "airplane_mode_counter_file"}}/mnt/airplane-mode-counter{{end}}
+{{define "radio_status_file"}}/mnt/radio-status.json{{end}}
+{{define "ssh"}}ssh -o ConnectTimeout=10 -o StrictHostKeyChecking=no -o PasswordAuthentication=no -i {{EdenConfig "eden.tests"}}/eclient/image/cert/id_rsa root@{{end}}
+
+[!exec:bash] stop
+[!exec:sleep] stop
+[!exec:ssh] stop
+[!exec:chmod] stop
+[!exec:jq] stop
+
+exec chmod 600 {{EdenConfig "eden.tests"}}/eclient/image/cert/id_rsa
+
+# Starting of reboot detector with a 1 reboot limit
+! test eden.reboot.test -test.v -timewait 100m -reboot=0 -count=1 &
+
+message 'Resetting of EVE'
+eden eve reset
+exec sleep 30
+
+# Deploy local-manager
+eden pod deploy -n local-manager --memory=512MB docker://lfedge/eden-eclient:3cdd917 -p {{template "port"}}:22
+test eden.app.test -test.v -timewait 10m RUNNING local-manager
+
+# Wait for ssh access
+exec -t 5m bash wait_ssh.sh {{template "port"}}
+
+# Start local manager application
+exec -t 1m bash local-manager-start.sh
+
+# Obtain local-manager IP address
+exec -t 2m bash get-app-ip.sh local-manager
+source .env
+
+# Configure local server
+eden controller edge-node update --device profile_server_token={{template "token"}}
+eden controller edge-node update --device local_profile_server=$APP_IP:8888
+
+# STEP 1: Wait for radio status
+exec -t 1m bash get-radio-status.sh
+stdout 'airplane-mode=false'
+! stderr .
+
+# STEP 2: Enable airplane mode
+exec -t 1m bash toggle-airplane-mode.sh ON
+exec -t 1m bash get-radio-status.sh
+stdout 'airplane-mode=true'
+! stderr .
+
+# STEP 3: Disable airplane mode
+exec -t 1m bash toggle-airplane-mode.sh OFF
+exec -t 1m bash get-radio-status.sh
+stdout 'airplane-mode=false'
+! stderr .
+
+# STEP 4: Undeploy local-manager
+eden pod delete local-manager
+test eden.app.test -test.v -timewait 15m - local-manager
+
+-- wait-ssh.sh --
+EDEN={{EdenConfig "eden.root"}}/{{EdenConfig "eden.bin-dist"}}/{{EdenConfig "eden.eden-bin"}}
+HOST=$($EDEN eve ip)
+for p in $*
+do
+  for i in `seq 20`
+  do
+    sleep 20
+    # Test SSH-access to container
+    echo {{template "ssh"}}$HOST -p $p grep -q Ubuntu /etc/issue
+    {{template "ssh"}}$HOST -p $p grep -q Ubuntu /etc/issue && break
+  done
+done
+
+-- local-manager-start.sh --
+EDEN={{EdenConfig "eden.root"}}/{{EdenConfig "eden.bin-dist"}}/{{EdenConfig "eden.eden-bin"}}
+HOST=$($EDEN eve ip)
+ARGS="--token={{template "token"}}"
+ARGS="$ARGS --airplane-mode={{template "airplane_mode_config_file"}}"
+ARGS="$ARGS --airplane-mode-counter={{template "airplane_mode_counter_file"}}"
+ARGS="$ARGS --radio-status={{template "radio_status_file"}}"
+{{template "ssh"}}$HOST -p {{template "port"}} '/root/local_manager $ARGS &>/dev/null &'
+
+-- get-app-ip.sh --
+
+EDEN={{EdenConfig "eden.root"}}/{{EdenConfig "eden.bin-dist"}}/{{EdenConfig "eden.eden-bin"}}
+IP=$($EDEN pod ps | grep $1 | awk '{print $4}' | cut -d ":" -f 1)
+echo APP_IP=$IP>>.env
+
+-- toggle-airplane-mode.sh --
+EDEN={{EdenConfig "eden.root"}}/{{EdenConfig "eden.bin-dist"}}/{{EdenConfig "eden.eden-bin"}}
+HOST=$($EDEN eve ip)
+CMDS="
+prev_counter=\$(cat {{template "airplane_mode_counter_file"}})
+prev_counter=\${prev_counter:-0}
+echo $1>{{template "airplane_mode_config_file"}}
+while true; do
+    new_counter=\$(cat {{template "airplane_mode_counter_file"}})
+    new_counter=\${new_counter:-0}
+    [ \$new_counter -gt \$prev_counter ] && break
+    echo "Airplane mode is being switched $1..."
+    sleep 5
+done
+"
+{{template "ssh"}}$HOST -p {{template "port"}} "$CMDS"
+
+-- get-radio-status.sh --
+EDEN={{EdenConfig "eden.root"}}/{{EdenConfig "eden.bin-dist"}}/{{EdenConfig "eden.eden-bin"}}
+HOST=$($EDEN eve ip)
+CMDS="
+until cat {{template "radio_status_file"}} 2>/dev/null; do sleep 5; done
+am=\$(cat {{template "radio_status_file"}} | jq -rc '.airplaneMode | select (.!=null)')
+echo "airplane-mode=\${am:-false}"
+cat {{template "radio_status_file"}} | jq -rc '.configError | select (.!=null)' 1>&2
+cat {{template "radio_status_file"}} | jq -rc '.cellularStatus[] | .configError | select (.!=null)' 1>&2
+cat {{template "radio_status_file"}} | jq -rc '.cellularStatus[] | .probeError | select (.!=null)' 1>&2
+"
+
+{{template "ssh"}}$HOST -p {{template "port"}} "$CMDS"
+
+-- eden-config.yml --
+{{/* Test's config file */}}
+test:
+    controller: adam://{{EdenConfig "adam.ip"}}:{{EdenConfig "adam.port"}}
+    eve:
+      {{EdenConfig "eve.name"}}:
+        onboard-cert: {{EdenConfigPath "eve.cert"}}
+        serial: "{{EdenConfig "eve.serial"}}"
+        model: {{EdenConfig "eve.devmodel"}}
