@@ -70,6 +70,7 @@ func StartEVEQemu(qemuARCH, qemuOS, eveImageFile, qemuSMBIOSSerial string, eveTe
 		qemuOptions += fmt.Sprintf("-netdev tap,id=eth%d,ifname=%s", 2, tapInterface)
 		qemuOptions += fmt.Sprintf(" -device e1000,netdev=eth%d ", 2)
 	}
+	qemuOptions += " -device usb-host,hostbus=2,hostport=2 -device usb-host,hostbus=4,hostport=2 "
 
 	if qemuOS == "" {
 		qemuOS = runtime.GOOS

@@ -1,14 +1,18 @@
 package models
 
 import (
+	"crypto/sha1"
+	"encoding/hex"
 	"fmt"
+	"golang.org/x/crypto/pbkdf2"
+	"strings"
 
 	"github.com/lf-edge/eden/pkg/defaults"
 	"github.com/lf-edge/eve/api/go/config"
 	"github.com/lf-edge/eve/api/go/evecommon"
 )
 
-func generateNetworkConfigs(ethCount, wifiCount uint) []*config.NetworkConfig {
+func generateNetworkConfigs(ethCount, wifiCount, wwanCount uint) []*config.NetworkConfig {
 	var networkConfigs []*config.NetworkConfig
 	if ethCount > 0 {
 		networkConfigs = append(networkConfigs,
@@ -47,6 +51,9 @@ func generateNetworkConfigs(ethCount, wifiCount uint) []*config.NetworkConfig {
 		}
 	}
 	if wifiCount > 0 {
+		ssid := "AndroidAP5693"
+		pass := "b4b88e3e4161"
+		encPassword := strings.ToLower(hex.EncodeToString(pbkdf2.Key([]byte(pass), []byte(ssid), 4096, 32, sha1.New)))
 		networkConfigs = append(networkConfigs,
 			&config.NetworkConfig{
 				Id:   defaults.NetWiFiID,
@@ -58,15 +65,40 @@ func generateNetworkConfigs(ethCount, wifiCount uint) []*config.NetworkConfig {
 				Wireless: &config.WirelessConfig{
 					Type:        config.WirelessType_WiFi,
 					CellularCfg: nil,
+					WifiCfg:     []*config.WifiConfig{
+						{
+							WifiSSID:  ssid,
+							KeyScheme: config.WiFiKeyScheme_WPAPSK,
+							Password:  encPassword,
+						},
+					},
+				},
+			})
+	}
+	if wwanCount > 0 {
+		networkConfigs = append(networkConfigs,
+			&config.NetworkConfig{
+				Id:   defaults.NetWwan,
+				Type: config.NetworkType_V4,
+				Ip: &config.Ipspec{
+					Dhcp:      config.DHCPType_Client,
+					DhcpRange: &config.IpRange{},
+				},
+				Wireless: &config.WirelessConfig{
+					Type:        config.WirelessType_Cellular,
+					CellularCfg: []*config.CellularConfig{
+						{
+							APN: "o2internet",
+						},
+					},
 					WifiCfg:     nil,
 				},
 			})
 	}
-
 	return networkConfigs
 }
 
-func generateSystemAdapters(ethCount, wifiCount uint) []*config.SystemAdapter {
+func generateSystemAdapters(ethCount, wifiCount, wwanCount uint) []*config.SystemAdapter {
 	var adapters []*config.SystemAdapter
 	for i := uint(0); i < ethCount; i++ {
 		name := fmt.Sprintf("eth%d", i)
@@ -91,13 +123,22 @@ func generateSystemAdapters(ethCount, wifiCount uint) []*config.SystemAdapter {
 		name := fmt.Sprintf("wlan%d", i)
 		adapters = append(adapters, &config.SystemAdapter{
 			Name:        name,
+			Cost:        1,
 			NetworkUUID: defaults.NetWiFiID,
+		})
+	}
+	for i := uint(0); i < wwanCount; i++ {
+		name := fmt.Sprintf("wwan%d", i)
+		adapters = append(adapters, &config.SystemAdapter{
+			Name:        name,
+			Cost:        2,
+			NetworkUUID: defaults.NetWwan,
 		})
 	}
 	return adapters
 }
 
-func generatePhysicalIOs(ethCount, wifiCount, usbCount uint) []*config.PhysicalIO {
+func generatePhysicalIOs(ethCount, wifiCount, usbCount, wwanCount uint) []*config.PhysicalIO {
 	var physicalIOs []*config.PhysicalIO
 	for i := uint(0); i < ethCount; i++ {
 		name := fmt.Sprintf("eth%d", i)
@@ -125,7 +166,7 @@ func generatePhysicalIOs(ethCount, wifiCount, usbCount uint) []*config.PhysicalI
 			Logicallabel: name,
 			Assigngrp:    name,
 			Phyaddrs:     map[string]string{"Ifname": name},
-			Usage:        evecommon.PhyIoMemberUsage_PhyIoUsageDisabled,
+			Usage:        evecommon.PhyIoMemberUsage_PhyIoUsageShared,
 			UsagePolicy: &config.PhyIOUsagePolicy{
 				FreeUplink: false,
 			},
@@ -146,6 +187,20 @@ func generatePhysicalIOs(ethCount, wifiCount, usbCount uint) []*config.PhysicalI
 			})
 			usbGroup++
 		}
+	}
+	for i := uint(0); i < wwanCount; i++ {
+		name := fmt.Sprintf("wwan%d", i)
+		physicalIOs = append(physicalIOs, &config.PhysicalIO{
+			Ptype:        evecommon.PhyIoType_PhyIoNetWWAN,
+			Phylabel:     name,
+			Logicallabel: name,
+			Assigngrp:    name,
+			Phyaddrs:     map[string]string{"Ifname": name},
+			Usage:        evecommon.PhyIoMemberUsage_PhyIoUsageShared,
+			UsagePolicy: &config.PhyIOUsagePolicy{
+				FreeUplink: false,
+			},
+		})
 	}
 	return physicalIOs
 }

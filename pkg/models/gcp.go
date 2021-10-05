@@ -84,9 +84,9 @@ func (ctx *DevModelGCP) DevModelType() string {
 
 func createGCP() (DevModel, error) {
 	return &DevModelGCP{
-		physicalIOs:        generatePhysicalIOs(1, 0, 0),
-		networks:           generateNetworkConfigs(1, 0),
-		adapters:           generateSystemAdapters(1, 0),
+		physicalIOs:        generatePhysicalIOs(1, 0, 0, 0),
+		networks:           generateNetworkConfigs(1, 0, 0),
+		adapters:           generateSystemAdapters(1, 0, 0),
 		adapterForSwitches: []string{},
 	}, nil
 }

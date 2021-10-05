@@ -3,6 +3,7 @@
 package emetric
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"regexp"
@@ -109,9 +110,11 @@ func HandleAll(le *metrics.ZMetricMsg) bool {
 
 //MetricPrn print Metric data
 func MetricPrn(le *metrics.ZMetricMsg) {
-	fmt.Printf("DevID: %s", le.DevID)
-	fmt.Printf("\tAtTimeStamp: %s", le.AtTimeStamp.AsTime())
-	fmt.Print("\tDm: ", le.GetDm(), "\tAm: ", le.Am, "\tNm: ", le.Nm, "\tVm: ", le.Vm)
+	//fmt.Printf("DevID: %s", le.DevID)
+	//fmt.Printf("\tAtTimeStamp: %s", le.AtTimeStamp.AsTime())
+	//fmt.Print("\tDm: ", le.GetDm(), "\tAm: ", le.Am, "\tNm: ", le.Nm, "\tVm: ", le.Vm)
+	b, _ := json.Marshal(le)
+	fmt.Println(string(b))
 	fmt.Println()
 }
 

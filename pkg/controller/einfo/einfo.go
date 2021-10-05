@@ -3,6 +3,7 @@
 package einfo
 
 import (
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"regexp"
@@ -55,12 +56,14 @@ func InfoPrn(im *info.ZInfoMsg) {
 
 //ZInfoPrn print data from ZInfoMsg structure
 func ZInfoPrn(im *info.ZInfoMsg, ds []*ZInfoMsgInterface) {
-	fmt.Println("ztype:", im.GetZtype())
-	fmt.Println("devId:", im.GetDevId())
-	for i, d := range ds {
-		fmt.Printf("[%d]: %s\n", i, *d)
-	}
-	fmt.Println("atTimeStamp:", im.GetAtTimeStamp().AsTime())
+	//fmt.Println("ztype:", im.GetZtype())
+	//fmt.Println("devId:", im.GetDevId())
+	//for i, d := range ds {
+	//	fmt.Printf("[%d]: %s\n", i, *d)
+	//}
+	//fmt.Println("atTimeStamp:", im.GetAtTimeStamp().AsTime())
+	b, _ := json.Marshal(im)
+	fmt.Println(string(b))
 	fmt.Println()
 }
 

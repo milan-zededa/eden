@@ -55,23 +55,23 @@ exec -t 1m bash get-radio-status.sh
 stdout 'radio-silence=false'
 ! stderr .
 
-# STEP 2: Enable Radio-silence
-exec -t 2m bash toggle-radio-silence.sh ON
-exec -t 1m bash get-radio-status.sh
-stdout 'radio-silence=true'
-! stderr .
-
-# STEP 3: Disable Radio-silence mode
-exec -t 2m bash toggle-radio-silence.sh OFF
-exec -t 1m bash get-radio-status.sh
-stdout 'radio-silence=false'
-! stderr .
-
-# STEP 4: Undeploy local-manager
-eden pod delete local-manager
-test eden.app.test -test.v -timewait 15m - local-manager
-eden network delete {{template "network"}}
-test eden.network.test -test.v -timewait 10m - {{template "network"}}
+## STEP 2: Enable Radio-silence
+#exec -t 2m bash toggle-radio-silence.sh ON
+#exec -t 1m bash get-radio-status.sh
+#stdout 'radio-silence=true'
+#! stderr .
+#
+## STEP 3: Disable Radio-silence mode
+#exec -t 2m bash toggle-radio-silence.sh OFF
+#exec -t 1m bash get-radio-status.sh
+#stdout 'radio-silence=false'
+#! stderr .
+#
+## STEP 4: Undeploy local-manager
+#eden pod delete local-manager
+#test eden.app.test -test.v -timewait 15m - local-manager
+#eden network delete {{template "network"}}
+#test eden.network.test -test.v -timewait 10m - {{template "network"}}
 
 -- wait-ssh.sh --
 EDEN={{EdenConfig "eden.root"}}/{{EdenConfig "eden.bin-dist"}}/{{EdenConfig "eden.eden-bin"}}
