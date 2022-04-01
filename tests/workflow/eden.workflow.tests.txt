@@ -53,6 +53,9 @@ eden.escript.test -test.run TestEdenScripts/eve_restart
 {{end}}
 {{end}}
 
+/bin/echo Eden test app info (21.6/{{$tests}})
+eden.escript.test -testdata ../eclient/testdata/ -test.run TestEdenScripts/app_dhcp
+
 /bin/echo Eden Log test (05/{{$tests}})
 eden.escript.test -testdata ../lim/testdata/ -test.run TestEdenScripts/log_test
 /bin/echo Eden SSH test (06/{{$tests}})
@@ -118,8 +121,6 @@ eden.escript.test -testdata ../eclient/testdata/ -test.run TestEdenScripts/port_
 eden.escript.test -testdata ../eclient/testdata/ -test.run TestEdenScripts/radio_silence
 /bin/echo Eden test app info (21.5/{{$tests}})
 eden.escript.test -testdata ../eclient/testdata/ -test.run TestEdenScripts/app_local_info
-/bin/echo Eden test app info (21.6/{{$tests}})
-eden.escript.test -testdata ../eclient/testdata/ -test.run TestEdenScripts/app_dhcp
 
 {{if (eq $usb_pt "y")}}
 /bin/echo Hardware reboot - USB (22/{{$tests}})

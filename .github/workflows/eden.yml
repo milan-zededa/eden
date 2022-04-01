@@ -36,6 +36,10 @@ jobs:
           ./eden config set default --key=eve.cpu --value=2
           echo > tests/workflow/testdata/eden_stop.txt
           ./eden test ./tests/workflow -v debug
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 45
       - name: Collect logs
         if: ${{ always() }}
         run: |
