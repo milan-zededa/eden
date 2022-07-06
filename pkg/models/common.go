@@ -19,6 +19,20 @@ func generateNetworkConfigs(ethCount, wifiCount uint) []*config.NetworkConfig {
 					Dhcp:      config.DHCPType_Client,
 					DhcpRange: &config.IpRange{},
 				},
+				EntProxy: &config.ProxyConfig{
+					Proxies: []*config.ProxyServer{
+						{
+							Server: "192.168.120.1",
+							Port:   8080,
+							Proto:  config.ProxyProto_PROXY_HTTP,
+						},
+						{
+							Server: "192.168.120.1",
+							Port:   8080,
+							Proto:  config.ProxyProto_PROXY_HTTPS,
+						},
+					},
+				},
 				Wireless: nil,
 			})
 		if ethCount > 1 {
@@ -29,6 +43,20 @@ func generateNetworkConfigs(ethCount, wifiCount uint) []*config.NetworkConfig {
 					Ip: &config.Ipspec{
 						Dhcp:      config.DHCPType_Client,
 						DhcpRange: &config.IpRange{},
+					},
+					EntProxy: &config.ProxyConfig{
+						Proxies: []*config.ProxyServer{
+							{
+								Server: "192.168.120.1",
+								Port:   8080,
+								Proto:  config.ProxyProto_PROXY_HTTP,
+							},
+							{
+								Server: "192.168.120.1",
+								Port:   8080,
+								Proto:  config.ProxyProto_PROXY_HTTPS,
+							},
+						},
 					},
 					Wireless: nil,
 				})

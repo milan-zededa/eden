@@ -3,7 +3,7 @@
 FROM lfedge/eve-alpine:6.7.0 as build
 
 ENV BUILD_PKGS git gcc go make wget libc-dev linux-headers
-ENV PKGS bash iptables ip6tables iproute2 dhcpcd ipset curl radvd ethtool jq tcpdump strace openssh-client openssh-server vim
+ENV PKGS bash iptables ip6tables iproute2 dhcpcd ipset curl radvd ethtool jq tcpdump strace openssh-client openssh-server vim ca-certificates
 RUN eve-alpine-deploy.sh
 
 ARG DEV=n
@@ -32,8 +32,8 @@ RUN wget https://archive.ntp.org/ntp4/ntp-${NTP_VERSION}/ntp-${NTP_VERSION}.${NT
 
 WORKDIR /out
 RUN mkdir -p ./etc/ssh ./root/.ssh && chmod 0700 ./root/.ssh
-COPY cert/id_rsa* ./root/.ssh/
-COPY cert/id_rsa.pub ./root/.ssh/authorized_keys
+COPY cert/ssh/id_rsa* ./root/.ssh/
+COPY cert/ssh/id_rsa.pub ./root/.ssh/authorized_keys
 RUN cp /etc/passwd /etc/group ./etc/
 
 ADD ./  /sdn/
@@ -51,10 +51,12 @@ RUN echo "Downloading dependecies" && go mod download && \
     go build -ldflags "-s -w" -o /out/bin/sdn-agent cmd/agent/agent.go && \
     go build -ldflags "-s -w" -o /out/bin/dns64proxy cmd/dns64proxy/dns64proxy.go && \
     go build -ldflags "-s -w" -o /out/bin/httpsrv cmd/httpsrv/httpsrv.go && \
-    go build -ldflags "-s -w" -o /out/bin/goproxy cmd/goproxy/goproxy.go
+    go build -ldflags "-s -w" -o /out/bin/goproxy cmd/goproxy/goproxy.go cmd/goproxy/cert.go
 
 FROM scratch
 COPY --from=build /out/ /
+COPY cert/root/ca-cert.pem /usr/local/share/ca-certificates/eden-root.crt
+RUN update-ca-certificates
 
 RUN sed -i 's/#*PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config && \
     sed -i 's/#*PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config

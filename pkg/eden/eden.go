@@ -417,6 +417,13 @@ func GenerateEveCerts(certsDir, domain, ip, eveIP, uuid, devModel, ssid, passwor
 	caCertPath := filepath.Join(globalCertsDir, "root-certificate.pem")
 	caKeyPath := filepath.Join(globalCertsDir, "root-certificate-key.pem")
 	rootCert, rootKey := utils.GenCARoot()
+	// TODO: how to do this properly?
+	if err = utils.CopyFile("./sdn/cert/root/ca-cert.pem", caCertPath); err != nil {
+		return fmt.Errorf("GenerateEveCerts: %s", err)
+	}
+	if err = utils.CopyFile("./sdn/cert/root/ca-key.pem", caKeyPath); err != nil {
+		return fmt.Errorf("GenerateEveCerts: %s", err)
+	}
 	if _, err := tls.LoadX509KeyPair(caCertPath, caKeyPath); err == nil { //existing certs looks ok
 		log.Info("Use existing certs")
 		rootCert, err = utils.ParseCertificate(caCertPath)
@@ -617,11 +624,13 @@ func GenerateEVEConfig(eveConfig string, domain string, ip string, port int, api
 		}
 	}
 	if ip != "" {
+		/*
 		if _, err = os.Stat(filepath.Join(eveConfig, "hosts")); os.IsNotExist(err) {
 			if err = ioutil.WriteFile(filepath.Join(eveConfig, "hosts"), []byte(fmt.Sprintf("%s %s\n", ip, domain)), 0666); err != nil {
 				return fmt.Errorf("GenerateEVEConfig: %s", err)
 			}
 		}
+		 */
 		if _, err = os.Stat(filepath.Join(eveConfig, "server")); os.IsNotExist(err) {
 			if err = ioutil.WriteFile(filepath.Join(eveConfig, "server"), []byte(fmt.Sprintf("%s:%d\n", domain, port)), 0666); err != nil {
 				return fmt.Errorf("GenerateEVEConfig: %s", err)
