@@ -417,13 +417,6 @@ func GenerateEveCerts(certsDir, domain, ip, eveIP, uuid, devModel, ssid, passwor
 	caCertPath := filepath.Join(globalCertsDir, "root-certificate.pem")
 	caKeyPath := filepath.Join(globalCertsDir, "root-certificate-key.pem")
 	rootCert, rootKey := utils.GenCARoot()
-	// TODO: how to do this properly?
-	if err = utils.CopyFile("./sdn/cert/root/ca-cert.pem", caCertPath); err != nil {
-		return fmt.Errorf("GenerateEveCerts: %s", err)
-	}
-	if err = utils.CopyFile("./sdn/cert/root/ca-key.pem", caKeyPath); err != nil {
-		return fmt.Errorf("GenerateEveCerts: %s", err)
-	}
 	if _, err := tls.LoadX509KeyPair(caCertPath, caKeyPath); err == nil { //existing certs looks ok
 		log.Info("Use existing certs")
 		rootCert, err = utils.ParseCertificate(caCertPath)

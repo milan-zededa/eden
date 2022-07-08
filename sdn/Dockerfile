@@ -55,8 +55,6 @@ RUN echo "Downloading dependecies" && go mod download && \
 
 FROM scratch
 COPY --from=build /out/ /
-COPY cert/root/ca-cert.pem /usr/local/share/ca-certificates/eden-root.crt
-RUN update-ca-certificates
 
 RUN sed -i 's/#*PubkeyAuthentication yes/PubkeyAuthentication yes/g' /etc/ssh/sshd_config && \
     sed -i 's/#*PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config

@@ -18,13 +18,11 @@ func main() {
 	verbose := flag.Bool("v", false, "should every proxy request be logged to stdout")
 	addr := flag.String("addr", ":8080", "proxy listen address")
 	flag.Parse()
-	/*
-		if err := setCA(caCert, caKey); err != nil {
-			log.Fatal(err)
-		}
-	*/
+	if err := setCA(caCert, caKey); err != nil {
+		log.Fatal(err)
+	}
 	proxy := goproxy.NewProxyHttpServer()
-	proxy.OnRequest().HandleConnect(AlwaysAllow) //goproxy.AlwaysMitm)
+	proxy.OnRequest().HandleConnect(goproxy.AlwaysMitm)
 	proxy.Verbose = *verbose
 	log.Fatal(http.ListenAndServe(*addr, proxy))
 }
