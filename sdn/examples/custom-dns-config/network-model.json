@@ -1,0 +1,66 @@
+{
+  "ports": [
+    {
+      "logicalLabel": "eveport0",
+      "adminUP": true
+    }
+  ],
+  "bridges": [
+    {
+      "logicalLabel": "bridge0",
+      "ports": ["eveport0"]
+    }
+  ],
+  "networks": [
+    {
+      "logicalLabel": "network0",
+      "bridge": "bridge0",
+      "subnet": "172.22.12.0/24",
+      "gwIP": "172.22.12.1",
+      "dhcp": {
+        "enable": true,
+        "ipRange": {
+          "fromIP": "172.22.12.10",
+          "toIP": "172.22.12.20"
+        },
+        "privateDNS": ["my-dns-server"]
+      },
+      "router": {
+        "outsideReachability": true,
+        "reachableEndpoints": ["my-dns-server", "my-client"]
+      }
+    }
+  ],
+  "endpoints": {
+    "clients": [
+      {
+        "logicalLabel": "my-client",
+        "fqdn": "my-client.sdn",
+        "subnet": "10.15.15.0/24",
+        "ip": "10.15.15.10"
+      }
+    ],
+    "dnsServers": [
+      {
+        "logicalLabel": "my-dns-server",
+        "fqdn": "my-dns-server.sdn",
+        "subnet": "10.16.16.0/24",
+        "ip": "10.16.16.25",
+        "staticEntries": [
+          {
+            "fqdn": "mydomain.adam",
+            "ip": "adam-ip"
+          },
+          {
+            "fqdn": "azr3112prdbcn01.dir.slb.com",
+            "ip": "10.15.15.10"
+          }
+        ],
+        "upstreamServers": [
+          "1.1.1.1",
+          "8.8.8.8"
+        ]
+      }
+    ]
+  }
+}

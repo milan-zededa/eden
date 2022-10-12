@@ -74,7 +74,7 @@ func (exp *AppExpectation) createNetworkInstance(instanceExpect *NetInstanceExpe
 		netInst.Ip = &config.Ipspec{
 			Subnet:  instanceExpect.subnet,
 			Gateway: subentIPs[1].String(),
-			Dns:     []string{subentIPs[1].String()},
+			//Dns:     []string{subentIPs[1].String()},
 			DhcpRange: &config.IpRange{
 				Start: subentIPs[2].String(),
 				End:   subentIPs[len(subentIPs)-2].String(),
