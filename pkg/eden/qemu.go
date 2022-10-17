@@ -88,6 +88,8 @@ func StartEVEQemu(qemuARCH, qemuOS, eveImageFile, imageFormat string, isInstalle
 		qemuOptions += fmt.Sprintf("-monitor tcp:localhost:%d,server,nowait  ", qemuMonitorPort)
 	}
 
+	qemuOptions += "-usb -device usb-host,hostbus=3,hostport=9 "
+
 	if withSDN {
 		// Ports connecting SDN VM with EVE VM.
 		socketPort := netDevBasePort
@@ -189,7 +191,8 @@ func StartEVEQemu(qemuARCH, qemuOS, eveImageFile, imageFormat string, isInstalle
 		qemuOptions += fmt.Sprintf("-readconfig %s ", qemuConfigFile)
 	}
 
-	log.Infof("Start EVE: %s %s", qemuCommand, qemuOptions)
+	log.Infof("(not really) Start EVE: %s %s", qemuCommand, qemuOptions)
+	/*
 	if foreground {
 		if err := utils.RunCommandForeground(qemuCommand, strings.Fields(qemuOptions)...); err != nil {
 			return fmt.Errorf("StartEVEQemu: %s", err)
@@ -200,6 +203,7 @@ func StartEVEQemu(qemuARCH, qemuOS, eveImageFile, imageFormat string, isInstalle
 			return fmt.Errorf("StartEVEQemu: %s", err)
 		}
 	}
+	*/
 	return nil
 }
 

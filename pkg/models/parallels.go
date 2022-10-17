@@ -112,9 +112,9 @@ func (ctx *DevModelParallels) DevModelType() string {
 
 func createParallels() (DevModel, error) {
 	return &DevModelParallels{
-		physicalIOs:        generatePhysicalIOs(2, 0, 4),
-		networks:           generateNetworkConfigs(2, 0),
-		adapters:           generateSystemAdapters(2, 0),
+		physicalIOs:        generatePhysicalIOs(2, 0, 4, 0),
+		networks:           generateNetworkConfigs(2, 0, 0),
+		adapters:           generateSystemAdapters(2, 0, 0),
 		adapterForSwitches: []string{"eth1"},
 	}, nil
 }
