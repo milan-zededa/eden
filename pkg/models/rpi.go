@@ -176,8 +176,8 @@ func (ctx *DevModelRpi) DevModelType() string {
 
 func createRpi() (DevModel, error) {
 	return &DevModelRpi{
-		physicalIOs: generatePhysicalIOs(1, 1, 0),
-		networks:    generateNetworkConfigs(1, 1),
-		adapters:    generateSystemAdapters(1, 1),
+		physicalIOs: generatePhysicalIOs(1, 1, 0, 0),
+		networks:    generateNetworkConfigs(1, 1, 0),
+		adapters:    generateSystemAdapters(1, 1, 0),
 	}, nil
 }

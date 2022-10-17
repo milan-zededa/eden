@@ -110,9 +110,9 @@ func (ctx *DevModelQemu) DevModelType() string {
 
 func createQemu() (DevModel, error) {
 	return &DevModelQemu{
-			physicalIOs:        generatePhysicalIOs(3, 0, 4),
-			networks:           generateNetworkConfigs(3, 0),
-			adapters:           generateSystemAdapters(3, 0),
+			physicalIOs:        generatePhysicalIOs(3, 0, 4, 1),
+			networks:           generateNetworkConfigs(3, 0, 1),
+			adapters:           generateSystemAdapters(3, 0, 1),
 			adapterForSwitches: []string{"eth2"}},
 		nil
 }
