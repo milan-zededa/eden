@@ -97,6 +97,7 @@ const (
 	NetNoDHCPID                  = "6822e35f-c1b8-43ca-b344-0bbc0ece8cf2"
 	NetWiFiID                    = "6822e35f-c1b8-43ca-b344-0bbc0ece8cf3"
 	NetSwitch                    = "6822e35f-c1b8-43ca-b344-0bbc0ece8cf4"
+	NetWWANID                    = "6822e35f-c1b8-43ca-b344-0bbc0ece8cf5"
 	DefaultTestProg              = "eden.escript.test"
 	DefaultTestScenario          = ""
 	DefaultRootFSVersionPattern  = `^.*-(xen|kvm|acrn|rpi|rpi-xen|rpi-kvm)-(amd64|arm64)$`

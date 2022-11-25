@@ -8,7 +8,7 @@ import (
 	"github.com/lf-edge/eve/api/go/evecommon"
 )
 
-func generateNetworkConfigs(ethCount, wifiCount uint) []*config.NetworkConfig {
+func generateNetworkConfigs(ethCount, wifiCount, wwanCount uint) []*config.NetworkConfig {
 	var networkConfigs []*config.NetworkConfig
 	if ethCount > 0 {
 		networkConfigs = append(networkConfigs,
@@ -62,11 +62,36 @@ func generateNetworkConfigs(ethCount, wifiCount uint) []*config.NetworkConfig {
 				},
 			})
 	}
+	if wwanCount > 0 {
+		networkConfigs = append(networkConfigs,
+			&config.NetworkConfig{
+				Id:   defaults.NetWWANID,
+				Type: config.NetworkType_V4,
+				Ip: &config.Ipspec{
+					Dhcp:      config.DHCPType_Client,
+					DhcpRange: &config.IpRange{},
+				},
+				Wireless: &config.WirelessConfig{
+					Type:        config.WirelessType_Cellular,
+					CellularCfg: []*config.CellularConfig{
+						{
+							APN:              "o2internet",
+							Probe:            &config.CellularConnectivityProbe{
+								Disable:      false,
+								ProbeAddress: "",
+							},
+							LocationTracking: false,
+						},
+					},
+					WifiCfg:     nil,
+				},
+			})
+	}
 
 	return networkConfigs
 }
 
-func generateSystemAdapters(ethCount, wifiCount uint) []*config.SystemAdapter {
+func generateSystemAdapters(ethCount, wifiCount, wwanCount uint) []*config.SystemAdapter {
 	var adapters []*config.SystemAdapter
 	for i := uint(0); i < ethCount; i++ {
 		name := fmt.Sprintf("eth%d", i)
@@ -94,10 +119,17 @@ func generateSystemAdapters(ethCount, wifiCount uint) []*config.SystemAdapter {
 			NetworkUUID: defaults.NetWiFiID,
 		})
 	}
+	for i := uint(0); i < wwanCount; i++ {
+		name := fmt.Sprintf("wwan%d", i)
+		adapters = append(adapters, &config.SystemAdapter{
+			Name:        name,
+			NetworkUUID: defaults.NetWWANID,
+		})
+	}
 	return adapters
 }
 
-func generatePhysicalIOs(ethCount, wifiCount, usbCount uint) []*config.PhysicalIO {
+func generatePhysicalIOs(ethCount, wifiCount, usbCount, wwanCount uint) []*config.PhysicalIO {
 	var physicalIOs []*config.PhysicalIO
 	for i := uint(0); i < ethCount; i++ {
 		name := fmt.Sprintf("eth%d", i)
@@ -146,6 +178,20 @@ func generatePhysicalIOs(ethCount, wifiCount, usbCount uint) []*config.PhysicalI
 			})
 			usbGroup++
 		}
+	}
+	for i := uint(0); i < wwanCount; i++ {
+		name := fmt.Sprintf("wwan%d", i)
+		physicalIOs = append(physicalIOs, &config.PhysicalIO{
+			Ptype:        evecommon.PhyIoType_PhyIoNetWWAN,
+			Phylabel:     name,
+			Logicallabel: name,
+			Assigngrp:    name,
+			Phyaddrs:     map[string]string{"Ifname": name},
+			Usage:        evecommon.PhyIoMemberUsage_PhyIoUsageMgmtAndApps,
+			UsagePolicy: &config.PhyIOUsagePolicy{
+				FreeUplink: false,
+			},
+		})
 	}
 	return physicalIOs
 }
