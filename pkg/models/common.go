@@ -72,18 +72,43 @@ func generateNetworkConfigs(ethCount, wifiCount, wwanCount uint) []*config.Netwo
 					DhcpRange: &config.IpRange{},
 				},
 				Wireless: &config.WirelessConfig{
-					Type:        config.WirelessType_Cellular,
+					Type: config.WirelessType_Cellular,
 					CellularCfg: []*config.CellularConfig{
 						{
-							APN:              "o2internet",
-							Probe:            &config.CellularConnectivityProbe{
+							APN: "internet",
+							Probe: &config.CellularConnectivityProbe{
 								Disable:      false,
 								ProbeAddress: "",
 							},
 							LocationTracking: false,
 						},
 					},
-					WifiCfg:     nil,
+					WifiCfg: nil,
+				},
+			})
+	}
+	if wwanCount > 1 {
+		networkConfigs = append(networkConfigs,
+			&config.NetworkConfig{
+				Id:   defaults.NetWWANID2,
+				Type: config.NetworkType_V4,
+				Ip: &config.Ipspec{
+					Dhcp:      config.DHCPType_Client,
+					DhcpRange: &config.IpRange{},
+				},
+				Wireless: &config.WirelessConfig{
+					Type: config.WirelessType_Cellular,
+					CellularCfg: []*config.CellularConfig{
+						{
+							APN: "internet",
+							Probe: &config.CellularConnectivityProbe{
+								Disable:      false,
+								ProbeAddress: "",
+							},
+							LocationTracking: false,
+						},
+					},
+					WifiCfg: nil,
 				},
 			})
 	}
@@ -121,9 +146,14 @@ func generateSystemAdapters(ethCount, wifiCount, wwanCount uint) []*config.Syste
 	}
 	for i := uint(0); i < wwanCount; i++ {
 		name := fmt.Sprintf("wwan%d", i)
+		network := defaults.NetWWANID
+		if i > 0 {
+			network = defaults.NetWWANID2
+		}
 		adapters = append(adapters, &config.SystemAdapter{
 			Name:        name,
-			NetworkUUID: defaults.NetWWANID,
+			NetworkUUID: network,
+			Cost:        10,
 		})
 	}
 	return adapters

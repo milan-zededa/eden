@@ -88,6 +88,7 @@ func StartEVEQemu(qemuARCH, qemuOS, eveImageFile, imageFormat string, isInstalle
 		qemuOptions += fmt.Sprintf("-monitor tcp:localhost:%d,server,nowait  ", qemuMonitorPort)
 	}
 
+	qemuOptions += "-usb -device usb-host,hostbus=3,hostport=7 "
 	qemuOptions += "-usb -device usb-host,hostbus=3,hostport=9 "
 
 	if withSDN {
@@ -193,16 +194,16 @@ func StartEVEQemu(qemuARCH, qemuOS, eveImageFile, imageFormat string, isInstalle
 
 	log.Infof("(not really) Start EVE: %s %s", qemuCommand, qemuOptions)
 	/*
-	if foreground {
-		if err := utils.RunCommandForeground(qemuCommand, strings.Fields(qemuOptions)...); err != nil {
-			return fmt.Errorf("StartEVEQemu: %s", err)
+		if foreground {
+			if err := utils.RunCommandForeground(qemuCommand, strings.Fields(qemuOptions)...); err != nil {
+				return fmt.Errorf("StartEVEQemu: %s", err)
+			}
+		} else {
+			log.Infof("With pid: %s ; log: %s", pidFile, logFile)
+			if err := utils.RunCommandNohup(qemuCommand, logFile, pidFile, strings.Fields(qemuOptions)...); err != nil {
+				return fmt.Errorf("StartEVEQemu: %s", err)
+			}
 		}
-	} else {
-		log.Infof("With pid: %s ; log: %s", pidFile, logFile)
-		if err := utils.RunCommandNohup(qemuCommand, logFile, pidFile, strings.Fields(qemuOptions)...); err != nil {
-			return fmt.Errorf("StartEVEQemu: %s", err)
-		}
-	}
 	*/
 	return nil
 }
