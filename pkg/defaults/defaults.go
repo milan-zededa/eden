@@ -7,7 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//directories and files
+// directories and files
 const (
 	DefaultDist             = "dist"             //root directory
 	DefaultImageDist        = "images"           //directory for images inside dist
@@ -36,7 +36,7 @@ const (
 	DefaultTestArgsEnv = "EDEN_TEST_ARGS" //default env for test arguments
 )
 
-//domains, ips, ports
+// domains, ips, ports
 const (
 	DefaultDomain               = "mydomain.adam"
 	DefaultIP                   = "192.168.0.1"
@@ -53,7 +53,7 @@ const (
 	DefaultRegistryPort         = 5050
 
 	//tags, versions, repos
-	DefaultEVETag               = "9.12.0" // DefaultEVETag tag for EVE image
+	DefaultEVETag               = "0.0.0-multiple-modems-4c5f0434" // DefaultEVETag tag for EVE image
 	DefaultAdamTag              = "0.0.43"
 	DefaultRedisTag             = "7"
 	DefaultRegistryTag          = "2.7"
@@ -67,7 +67,7 @@ const (
 	DefaultMkimageContainerRef  = "lfedge/eve-mkimage-raw-efi"
 	DefaultEdenSDNContainerRef  = "lfedge/eden-sdn"
 	DefaultEveRepo              = "https://github.com/lf-edge/eve.git"
-	DefaultEveRegistry          = "lfedge/eve"
+	DefaultEveRegistry          = "milan4zededa/eve"
 	DefaultRegistry             = "docker.io"
 
 	DefaultSFTPUser      = "user"
