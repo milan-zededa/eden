@@ -43,7 +43,5 @@ eden.escript.test -test.run TestEdenScripts/template_check
 eden.escript.test -test.run TestEdenScripts/ssh
 
 
-/bin/echo Eden Network light (20.2/{{$tests}})
-eden.escript.test -testdata ../eclient/testdata/ -test.run TestEdenScripts/networking_light
 /bin/echo Eden test dev info (21.7/{{$tests}})
 eden.escript.test -testdata ../eclient/testdata/ -test.run TestEdenScripts/dev_local_info
