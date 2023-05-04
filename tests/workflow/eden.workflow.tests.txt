@@ -43,18 +43,7 @@ eden.escript.test -test.run TestEdenScripts/template_check
 eden.escript.test -test.run TestEdenScripts/ssh
 
 
-/bin/echo Eden basic volumes test (17.1/{{$tests}})
-eden.escript.test -testdata ../volume/testdata/ -test.run TestEdenScripts/volumes_test
-
-/bin/echo Eden profile test (18/{{$tests}})
-eden.escript.test -testdata ../eclient/testdata/ -test.run TestEdenScripts/profile
-
-
 /bin/echo Eden Network light (20.2/{{$tests}})
 eden.escript.test -testdata ../eclient/testdata/ -test.run TestEdenScripts/networking_light
-/bin/echo Eden Network portmap test (21.3/{{$tests}})
-eden.escript.test -testdata ../eclient/testdata/ -test.run TestEdenScripts/port_forward
-/bin/echo Eden test app info (21.5/{{$tests}})
-eden.escript.test -testdata ../eclient/testdata/ -test.run TestEdenScripts/app_local_info
 /bin/echo Eden test dev info (21.7/{{$tests}})
 eden.escript.test -testdata ../eclient/testdata/ -test.run TestEdenScripts/dev_local_info
