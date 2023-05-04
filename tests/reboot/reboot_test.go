@@ -49,9 +49,12 @@ func checkReboot(t *testing.T, edgeNode *device.Ctx) projects.ProcInfoFunc {
 			return nil
 		}
 		currentLastRebootTime := im.GetDinfo().LastRebootTime
+		fmt.Printf("HEY!!! rebooted with reason %s at %s (%t, %t, %d)/n",
+			im.GetDinfo().LastRebootReason, im.GetDinfo().LastRebootTime.AsTime(),
+			im.GetDinfo().LastRebootReason == "", currentLastRebootTime.AsTime().IsZero(), currentLastRebootTime.AsTime().Unix())
 		if !proto.Equal(lastRebootTime, currentLastRebootTime) {
 			if im.GetDinfo().LastRebootReason == "" &&
-				currentLastRebootTime.AsTime().IsZero() {
+				currentLastRebootTime.AsTime().Unix() == 0 {
 				// device may not fill the info
 				return nil
 			}
