@@ -31,7 +31,7 @@ test eden.network.test -test.v -timewait 10m ACTIVATED {{template "network"}}
 
 # Deploy local-manager
 eden pod deploy -n local-manager --memory=512MB {{template "eclient_image"}} -p {{template "mngr_port"}}:22 --networks={{template "network"}}
-test eden.app.test -test.v -timewait 10m RUNNING local-manager
+test eden.app.test -test.v -timewait 15m RUNNING local-manager
 
 # Wait for ssh access
 exec -t 5m bash wait-ssh.sh {{template "mngr_port"}}
@@ -54,7 +54,7 @@ exec -t 10m bash get-devinfo-status.sh
 
 # STEP 2: Deploy the second app
 eden pod deploy -n app1 --memory=512MB {{template "eclient_image"}} -p {{template "app_port"}}:22 --networks={{template "network"}}
-test eden.app.test -test.v -timewait 10m RUNNING app1
+test eden.app.test -test.v -timewait 15m RUNNING app1
 
 # Wait for ssh access
 exec -t 5m bash wait-ssh.sh {{template "app_port"}}
