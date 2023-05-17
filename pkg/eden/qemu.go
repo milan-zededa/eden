@@ -48,7 +48,7 @@ func StartEVEQemu(qemuARCH, qemuOS, eveImageFile, imageFormat string, isInstalle
 	netModel sdnapi.NetworkModel, withSDN bool, tapInterface, usbImagePath string,
 	swtpm, foreground bool) (err error) {
 	var qemuCommand, qemuOptions string
-	qemuOptions += "-nodefaults -no-user-config "
+	qemuOptions += "-D ./log.txt -nodefaults -no-user-config "
 	netDev := "virtio-net-pci"
 	tpmDev := "tpm-tis"
 	if qemuARCH == "" {
