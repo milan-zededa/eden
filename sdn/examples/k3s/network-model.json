@@ -1,0 +1,70 @@
+{
+  "ports": [
+    {
+      "logicalLabel": "eveport0",
+      "adminUP": true
+    },
+    {
+      "logicalLabel": "eveport1",
+      "adminUP": true
+    }
+  ],
+  "bridges": [
+    {
+      "logicalLabel": "bridge0",
+      "ports": ["eveport0"]
+    },
+    {
+      "logicalLabel": "bridge1",
+      "ports": ["eveport1"]
+    }
+  ],
+  "networks": [
+    {
+      "logicalLabel": "network0",
+      "bridge": "bridge0",
+      "subnet": "172.11.12.0/24",
+      "gwIP": "172.11.12.1",
+      "dhcp": {
+        "enable": false
+      },
+      "router": {
+        "outsideReachability": true,
+        "reachableEndpoints": ["my-dns-server"]
+      }
+    },
+    {
+      "logicalLabel": "network1",
+      "bridge": "bridge1",
+      "subnet": "172.22.12.0/24",
+      "gwIP": "172.22.12.1",
+      "dhcp": {
+        "enable": false
+      },
+      "router": {
+        "outsideReachability": true,
+        "reachableEndpoints": ["my-dns-server"]
+      }
+    }
+  ],
+  "endpoints": {
+    "dnsServers": [
+      {
+        "logicalLabel": "my-dns-server",
+        "fqdn": "my-dns-server.sdn",
+        "subnet": "10.16.16.0/24",
+        "ip": "10.16.16.25",
+        "staticEntries": [
+          {
+            "fqdn": "mydomain.adam",
+            "ip": "adam-ip"
+          }
+        ],
+        "upstreamServers": [
+          "1.1.1.1",
+          "8.8.8.8"
+        ]
+      }
+    ]
+  }
+}
