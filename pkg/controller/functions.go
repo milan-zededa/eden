@@ -149,6 +149,7 @@ func (cloud *CloudCtx) OnBoardDev(node *device.Ctx) error {
 				if cloud.vars.LogLevel != "" {
 					node.SetConfigItem("debug.default.loglevel", cloud.vars.LogLevel)
 				}
+				node.SetConfigItem("agent.wwan.debug.loglevel", "debug")
 				if cloud.vars.SSHKey != "" {
 					b, err := ioutil.ReadFile(cloud.vars.SSHKey)
 					switch {

@@ -75,7 +75,7 @@ func generateNetworkConfigs(ethCount, wifiCount, wwanCount uint) []*config.Netwo
 					Type: config.WirelessType_Cellular,
 					CellularCfg: []*config.CellularConfig{
 						{
-							APN: "internet",
+							APN: "o2internet",
 							Probe: &config.CellularConnectivityProbe{
 								Disable:      false,
 								ProbeAddress: "",
@@ -100,12 +100,37 @@ func generateNetworkConfigs(ethCount, wifiCount, wwanCount uint) []*config.Netwo
 					Type: config.WirelessType_Cellular,
 					CellularCfg: []*config.CellularConfig{
 						{
-							APN: "internet",
 							Probe: &config.CellularConnectivityProbe{
 								Disable:      false,
 								ProbeAddress: "",
 							},
 							LocationTracking: false,
+							AccessPoints: []*config.CellularAccessPoint{
+								{
+									SimSlot:      1,
+									Apn:          "o2internet",
+									AuthProtocol: 0,
+									CipherData:   nil,
+									//PreferredPlmns: []string{"231-06"},
+									ForbidRoaming: true,
+									PreferredRats: []evecommon.RadioAccessTechnology{
+										evecommon.RadioAccessTechnology_RADIO_ACCESS_TECHNOLOGY_UMTS,
+										evecommon.RadioAccessTechnology_RADIO_ACCESS_TECHNOLOGY_LTE,
+									},
+								},
+								{
+									SimSlot:       2,
+									Apn:           "internet",
+									AuthProtocol:  0,
+									CipherData:    nil,
+									ForbidRoaming: true,
+									//PreferredPlmns: []string{"231-01"},
+									PreferredRats: []evecommon.RadioAccessTechnology{
+										evecommon.RadioAccessTechnology_RADIO_ACCESS_TECHNOLOGY_UMTS,
+									},
+								},
+							},
+							ActivatedSimSlot: 2,
 						},
 					},
 					WifiCfg: nil,
@@ -145,7 +170,7 @@ func generateSystemAdapters(ethCount, wifiCount, wwanCount uint) []*config.Syste
 		})
 	}
 	for i := uint(0); i < wwanCount; i++ {
-		name := fmt.Sprintf("wwan%d", i)
+		name := fmt.Sprintf("modem%d", i)
 		network := defaults.NetWWANID
 		if i > 0 {
 			network = defaults.NetWWANID2
@@ -210,13 +235,13 @@ func generatePhysicalIOs(ethCount, wifiCount, usbCount, wwanCount uint) []*confi
 		}
 	}
 	for i := uint(0); i < wwanCount; i++ {
-		name := fmt.Sprintf("wwan%d", i)
+		name := fmt.Sprintf("modem%d", i)
 		physicalIOs = append(physicalIOs, &config.PhysicalIO{
 			Ptype:        evecommon.PhyIoType_PhyIoNetWWAN,
 			Phylabel:     name,
 			Logicallabel: name,
 			Assigngrp:    name,
-			Phyaddrs:     map[string]string{"Ifname": name},
+			Phyaddrs:     map[string]string{"usbaddr": fmt.Sprintf("1:%d", i+1)},
 			Usage:        evecommon.PhyIoMemberUsage_PhyIoUsageMgmtAndApps,
 			UsagePolicy: &config.PhyIOUsagePolicy{
 				FreeUplink: false,
