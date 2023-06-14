@@ -72,18 +72,47 @@ func generateNetworkConfigs(ethCount, wifiCount, wwanCount uint) []*config.Netwo
 					DhcpRange: &config.IpRange{},
 				},
 				Wireless: &config.WirelessConfig{
-					Type:        config.WirelessType_Cellular,
+					Type: config.WirelessType_Cellular,
 					CellularCfg: []*config.CellularConfig{
 						{
-							APN:              "o2internet",
-							Probe:            &config.CellularConnectivityProbe{
+							//APN: "o2internet",
+							Probe: &config.CellularConnectivityProbe{
 								Disable:      false,
 								ProbeAddress: "",
 							},
 							LocationTracking: false,
+							AccessPoints: []*config.CellularAccessPoint{
+								{
+									SimSlot:      1,
+									Apn:          "o2internet",
+									AuthProtocol: 0,
+									CipherData:   nil,
+									//PreferredPlmns: []string{"231-06"},
+									ForbidRoaming: true,
+									PreferredRats: []evecommon.RadioAccessTechnology{
+										evecommon.RadioAccessTechnology_RADIO_ACCESS_TECHNOLOGY_UMTS,
+										evecommon.RadioAccessTechnology_RADIO_ACCESS_TECHNOLOGY_LTE,
+									},
+								},
+								{
+									SimSlot:       2,
+									Apn:           "internet",
+									AuthProtocol:  0,
+									CipherData:    nil,
+									ForbidRoaming: true,
+									//PreferredPlmns: []string{"231-01"},
+									/*
+										PreferredRats: []evecommon.RadioAccessTechnology{
+											evecommon.RadioAccessTechnology_RADIO_ACCESS_TECHNOLOGY_UMTS,
+											evecommon.RadioAccessTechnology_RADIO_ACCESS_TECHNOLOGY_LTE,
+										},
+									*/
+								},
+							},
+							ActivatedSimSlot: 1,
 						},
 					},
-					WifiCfg:     nil,
+					WifiCfg: nil,
 				},
 			})
 	}

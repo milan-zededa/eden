@@ -27,7 +27,7 @@ require (
 	github.com/lf-edge/eden/eserver v0.0.0-20220711180217-6e2bfa9c3f67
 	github.com/lf-edge/eden/sdn/vm v0.0.0-00010101000000-000000000000
 	github.com/lf-edge/edge-containers v0.0.0-20220320131500-9d9f95d81e2c
-	github.com/lf-edge/eve/api/go v0.0.0-20221012062734-072272e81fdb
+	github.com/lf-edge/eve/api/go v0.0.0-20230612203304-13fba79dd3af
 	github.com/lunixbochs/struc v0.0.0-20200707160740-784aaebc1d40 // indirect
 	github.com/mcuadros/go-lookup v0.0.0-20200831155250-80f87a4fa5ee
 	github.com/moby/sys/mount v0.3.3 // indirect
@@ -56,7 +56,7 @@ require (
 	golang.org/x/term v0.0.0-20220526004731-065cf7ba2467
 	google.golang.org/api v0.86.0
 	google.golang.org/genproto v0.0.0-20220712132514-bdd2acd4974d // indirect
-	google.golang.org/protobuf v1.28.0
+	google.golang.org/protobuf v1.28.1
 	gopkg.in/errgo.v2 v2.1.0
 	gopkg.in/yaml.v2 v2.4.0
 	oras.land/oras-go v1.2.0
