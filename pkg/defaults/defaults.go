@@ -53,7 +53,7 @@ const (
 	DefaultRegistryPort         = 5050
 
 	//tags, versions, repos
-	DefaultEVETag               = "10.4.0" // DefaultEVETag tag for EVE image
+	DefaultEVETag               = "revert-cpu-sets" // DefaultEVETag tag for EVE image
 	DefaultAdamTag              = "0.0.43"
 	DefaultRedisTag             = "7"
 	DefaultRegistryTag          = "2.7"
@@ -67,7 +67,7 @@ const (
 	DefaultMkimageContainerRef  = "lfedge/eve-mkimage-raw-efi"
 	DefaultEdenSDNContainerRef  = "lfedge/eden-sdn"
 	DefaultEveRepo              = "https://github.com/lf-edge/eve.git"
-	DefaultEveRegistry          = "lfedge/eve"
+	DefaultEveRegistry          = "milan4zededa/eve"
 	DefaultRegistry             = "docker.io"
 
 	DefaultSFTPUser      = "user"
