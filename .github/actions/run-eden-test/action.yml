@@ -8,6 +8,8 @@ inputs:
   tpm_enabled:
     required: true
     type: bool
+  sdn_enabled:
+    type: bool
   suite:
     required: true
     type: string
@@ -24,6 +26,7 @@ runs:
       with:
         file_system: ${{ inputs.file_system }}
         tpm_enabled: ${{ inputs.tpm_enabled }}
+        sdn_enabled: ${{ inputs.sdn_enabled }}
         eve_image: ${{ inputs.eve_image }}
         eve_artifact_name: ${{ inputs.eve_artifact_name }}
     - name: Run tests
