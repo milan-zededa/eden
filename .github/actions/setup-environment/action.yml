@@ -8,6 +8,8 @@ inputs:
   tpm_enabled:
     required: true
     type: bool
+  sdn_enabled:
+    type: bool
   eve_image:
     type: string
   eve_artifact_name:
@@ -53,6 +55,9 @@ runs:
         fi
         ./eden config set default --key=eve.tpm --value=${{ inputs.tpm_enabled }}
         ./eden config set default --key=eve.cpu --value=2
+        if [[ "${{ inputs.sdn_enabled }}" == true ]]; then
+          ./eden config set default --key=sdn.disable --value=false
+        fi
       shell: bash
       working-directory: "./eden"
     - name: Download artifact if specified
