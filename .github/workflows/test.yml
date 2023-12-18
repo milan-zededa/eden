@@ -62,13 +62,14 @@ jobs:
       - name: Get code
         uses: actions/checkout@v3.5.3
         with:
-          repository: "lf-edge/eden"
+          repository: "milan-zededa/eden"
           path: "./eden"
       - name: Run Networking tests
         uses: ./eden/.github/actions/run-eden-test
         with:
           file_system: "ext4"
           tpm_enabled: true
+          sdn_enabled: true
           suite: "networking.tests.txt"
           eve_image:   ${{ inputs.eve_image }}
           eve_artifact_name: ${{ inputs.eve_artifact_name }}
