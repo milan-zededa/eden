@@ -1,0 +1,132 @@
+{
+  "ports": [
+    {
+      "logicalLabel": "eveport0",
+      "adminUP": true
+    },
+    {
+      "logicalLabel": "eveport1",
+      "adminUP": true
+    }
+  ],
+  "bridges": [
+    {
+      "logicalLabel": "bridge0",
+      "ports": ["eveport0"]
+    },
+    {
+      "logicalLabel": "bridge1",
+      "ports": ["eveport1"]
+    }
+  ],
+  "networks": [
+    {
+      "logicalLabel": "network0",
+      "bridge": "bridge0",
+      "subnet": "192.168.1.0/24",
+      "gwIP": "192.168.1.1",
+      "dhcp": {
+        "enable": true,
+        "ipRange": {
+          "fromIP": "192.168.1.10",
+          "toIP": "192.168.1.10"
+        },
+        "domainName": "demo",
+        "publicDNS": ["10.12.30.4"],
+        "publicNTP": "192.168.1.30"
+      },
+      "router": {
+        "outsideReachability": true,
+        "reachableEndpoints": ["dns-server-eth0"]
+      }
+    },
+    {
+      "logicalLabel": "network1",
+      "bridge": "bridge1",
+      "subnet": "172.20.1.0/24",
+      "gwIP": "172.20.1.1",
+      "dhcp": {
+        "enable": true,
+        "ipRange": {
+          "fromIP": "172.20.1.201",
+          "toIP": "172.20.1.201"
+        },
+        "domainName": "demo"
+      },
+      "router": {
+        "outsideReachability": false,
+        "reachableEndpoints": ["http-server", "dns-server-eth1"]
+      }
+    }
+  ],
+  "endpoints": {
+    "dnsServers": [
+      {
+        "logicalLabel": "dns-server-eth0",
+        "fqdn": "dns-server-eth0.demo",
+        "subnet": "10.12.30.0/24",
+        "ip": "10.12.30.5",
+        "staticEntries": [
+          {
+            "fqdn": "mydomain.adam",
+            "ip": "adam-ip"
+          }
+        ],
+        "upstreamServers": [
+          "1.1.1.1",
+          "8.8.8.8"
+        ]
+      },
+      {
+        "logicalLabel": "dns-server-eth1",
+        "fqdn": "dns-server-eth1.demo",
+        "subnet": "172.18.1.0/24",
+        "ip": "172.18.1.10",
+        "staticEntries": [
+          {
+            "fqdn": "endpoint-fqdn.http-server",
+            "ip": "endpoint-ip.http-server"
+          }
+        ],
+        "upstreamServers": [
+          "1.1.1.1",
+          "8.8.8.8"
+        ]
+      }
+    ],
+    "httpServers": [
+      {
+        "logicalLabel": "http-server",
+        "fqdn": "http-server.demo",
+        "subnet": "172.30.5.0/24",
+        "ip": "172.30.5.10",
+        "httpPort": 80,
+        "paths": {
+          "/test": {
+            "contentType": "text/plain",
+            "content": "Connectivity is working!\n"
+          }
+        }
+      }
+    ]
+  },
+  "firewall": {
+    "rules": [
+      {
+        "dstSubnet": "10.12.30.4/32",
+        "protocol": "udp",
+        "action": "reject"
+      },
+      {
+        "dstSubnet": "10.12.30.4/32",
+        "protocol": "tcp",
+        "action": "reject"
+      },
+      {
+        "dstSubnet": "10.12.30.4/32",
+        "protocol": "icmp",
+        "action": "reject"
+      }
+    ]
+ }
+}

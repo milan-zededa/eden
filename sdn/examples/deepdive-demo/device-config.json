@@ -1,0 +1,120 @@
+{
+  "deviceIoList": [
+    {
+      "ptype": 1,
+      "phylabel": "eth0",
+      "phyaddrs": {
+        "Ifname": "eth0"
+      },
+      "logicallabel": "ethernet0",
+      "assigngrp": "eth0",
+      "usage": 1
+    },
+    {
+      "ptype": 1,
+      "phylabel": "eth1",
+      "phyaddrs": {
+        "Ifname": "eth1"
+      },
+      "logicallabel": "ethernet1",
+      "assigngrp": "eth1",
+      "usage": 2
+    }
+  ],
+  "networks": [
+    {
+      "id": "6605d17b-3273-4108-8e6e-4965441ebe01",
+      "type": 4,
+      "ip": {
+        "dhcp": 1,
+        "subnet": "192.168.1.0/24",
+        "gateway": "192.168.1.1",
+        "dns": ["10.12.30.5"]
+      }
+    },
+    {
+      "id": "6605d17b-3273-4108-8e6e-4965441ebe02",
+      "type": 4,
+      "ip": {
+        "dhcp": 4
+      }
+    }
+  ],
+  "systemAdapterList": [
+    {
+      "name": "ethernet0",
+      "uplink": true,
+      "addr": "192.168.1.10",
+      "networkUUID": "6605d17b-3273-4108-8e6e-4965441ebe01"
+    },
+    {
+      "name": "ethernet1",
+      "uplink": false,
+      "networkUUID": "6605d17b-3273-4108-8e6e-4965441ebe02"
+    }
+  ],
+  "networkInstances": [
+    {
+      "uuidandversion": {
+        "uuid": "9ca83da9-94e8-48b4-9ae8-3f188c5c6901",
+        "version": "1"
+      },
+      "displayname": "netinst1",
+      "instType": 2,
+      "activate": true,
+      "port": {
+        "type": 1,
+        "name": "ethernet0"
+      },
+      "ipType": 1,
+      "ip": {
+        "subnet": "10.10.1.0/24",
+        "gateway": "10.10.1.1",
+        "dhcpRange": {
+          "start": "10.10.1.2",
+          "end": "10.10.1.254"
+        }
+      }
+    },
+    {
+      "uuidandversion": {
+        "uuid": "9ca83da9-94e8-48b4-9ae8-3f188c5c6902",
+        "version": "1"
+      },
+      "displayname": "netinst2",
+      "instType": 2,
+      "activate": true,
+      "port": {
+        "type": 1,
+        "name": "ethernet1"
+      },
+      "ipType": 1,
+      "ip": {
+        "subnet": "10.10.2.0/24",
+        "gateway": "10.10.2.1",
+        "dhcpRange": {
+          "start": "10.10.2.2",
+          "end": "10.10.2.254"
+        }
+      }
+    }
+  ],
+  "configItems": [
+    {
+      "key": "newlog.allow.fastupload",
+      "value": "true"
+    },
+    {
+      "key": "timer.config.interval",
+      "value": "10"
+    },
+    {
+      "key": "timer.download.retry",
+      "value": "60"
+    },
+    {
+      "key": "debug.default.loglevel",
+      "value": "debug"
+    }
+  ]
+}
