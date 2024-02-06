@@ -258,7 +258,7 @@ func startHttpSrv(srvName, netNamespace string) error {
 		cfgPath,
 	}
 	pidFile := httpSrvPidFile(srvName)
-	return startProcess(netNamespace, cmd, args, pidFile, httpSrvStartTimeout, true)
+	return startProcess(netNamespace, cmd, args, nil, pidFile, httpSrvStartTimeout, true)
 }
 
 func stopHttpSrv(srvName string) error {

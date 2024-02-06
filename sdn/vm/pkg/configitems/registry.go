@@ -29,6 +29,7 @@ func RegisterItems(
 		{c: &HttpProxyConfigurator{}, t: HTTPProxyTypename},
 		{c: &HttpServerConfigurator{}, t: HTTPServerTypename},
 		{c: &TrafficControlConfigurator{MacLookup: macLookup}, t: TrafficControlTypename},
+		{c: &PNACConfigurator{MacLookup: macLookup}, t: PNACTypename},
 	}
 	for _, configurator := range configurators {
 		err := registry.Register(configurator.c, configurator.t)

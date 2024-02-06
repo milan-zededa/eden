@@ -109,7 +109,7 @@ func (c *DhcpClientConfigurator) Create(ctx context.Context, item depgraph.Item)
 		}
 		args = append(args, "-t", "0") // wait for release forever
 		args = append(args, ifName)
-		err := startProcess(MainNsName, dhcpcdBinary, args, dhcpcdPidFile(ifName),
+		err := startProcess(MainNsName, dhcpcdBinary, args, nil, dhcpcdPidFile(ifName),
 			dhcpcdStartTimeout, true)
 		if err != nil {
 			done(err)

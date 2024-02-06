@@ -1,0 +1,64 @@
+{
+  "ports": [
+    {
+      "logicalLabel": "eveport0",
+      "adminUP": true,
+      "pnac": {
+        "eapMethod": "EAP-TLS",
+        "eapReauthPeriod": 600,
+        "caCertPEM": "-----BEGIN CERTIFICATE-----\nMIIDVTCCAj2gAwIBAgIUPGtlx1k08RmWd9RxiCKTXYnAUkIwDQYJKoZIhvcNAQEL\nBQAwOjETMBEGA1UEAwwKemVkZWRhLmNvbTELMAkGA1UEBhMCVVMxFjAUBgNVBAcM\nDVNhbiBGcmFuY2lzY28wHhcNMjIwOTA3MTcwMDE0WhcNMzIwNjA2MTcwMDE0WjA6\nMRMwEQYDVQQDDAp6ZWRlZGEuY29tMQswCQYDVQQGEwJVUzEWMBQGA1UEBwwNU2Fu\nIEZyYW5jaXNjbzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALQsi7IG\nM8KApujL71MJXbuPQNn/g+RItQeehaFRcqcCcpFW4k1YveMNdf5HReKlAfufFtaa\nIF368t33UlleblopLM8m8r9Ev1sSJOS1yYgU1HABjyw54LXBqT4tAf0xjlRaLn4L\nQBUAS0TTywTppGXtNwXpxqdDuQdigNskqzEFaGI52IQezfGt7L2CeeJ/YJNcbImR\neCXMPwTatUHLLE29Qv8GQQfy7TpCXdXVLvQAyfZJi7lY7DjPqBab5ocnVTRcEpKz\nFwH2+KTokQkU1UF614IveRF3ZOqqmrQvy1AdSvekFLIz2uP7xsfy3I3HNQcPJ4DI\n5vNzBaE/hF5xK40CAwEAAaNTMFEwHQYDVR0OBBYEFPxOB5cxsf89x6KdFSTTFV2L\nwta1MB8GA1UdIwQYMBaAFPxOB5cxsf89x6KdFSTTFV2Lwta1MA8GA1UdEwEB/wQF\nMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAFXqCJuq4ifMw3Hre7+X23q25jOb1nzd\n8qs+1Tij8osUC5ekD21x/k9g+xHvacoJIOzsAmpAPSnwXKMnvVdAeX6Scg1Bvejj\nTdXfNEJ7jcvDROUNjlWYjwiY+7ahDkj56nahwGjjUQdgCCzRiSYPOq6N1tRkn97a\ni6+jB8DnTSDnv5j8xiPDbWJ+nv2O1NNsoHS91UrTqkVXxNItrCdPPh21hzrTJxs4\noSf4wbaF5n3E2cPpSAaXBEyxBdXAqUCIhP0q9/pgBTYuJ+eW467u4xWqUVi4iBtN\nwVfYelYC2v03Rn433kv624oJDQ7MM5bDUv3nqPtkUys0ARwxs8tQCgg=\n-----END CERTIFICATE-----",
+        "serverCertPEM": "-----BEGIN CERTIFICATE-----\nMIIDHDCCAgQCFHmpKJMflNqbwR9UDlIwfwCiII3zMA0GCSqGSIb3DQEBCwUAMDox\nEzARBgNVBAMMCnplZGVkYS5jb20xCzAJBgNVBAYTAlVTMRYwFAYDVQQHDA1TYW4g\nRnJhbmNpc2NvMB4XDTI0MDMxMTEwMjM0M1oXDTI0MDQxMDEwMjM0M1owWzELMAkG\nA1UEBhMCVVMxEzARBgNVBAgMCkNhbGlmb3JuaWExETAPBgNVBAcMCFNhbiBKb3Nl\nMQ8wDQYDVQQKDAZaZWRlZGExEzARBgNVBAMMCnplZGVkYS5jb20wggEiMA0GCSqG\nSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDCQMbuS2EYw6wNsCyc3ZxlKoXqMr9P8Zsf\nKKkxC1GjuAhvgYmKZpQZ8nHP/YJMlv1xAH1bqr6gDjC8YSPaYfO+SR93cJmBcBTq\ncfilhagBUlCdk+r5qjCHT6RL1cNhdSSCCkUOE+PhRhleoIgCeLrHMFnGeTKrogSq\nmIJuUM/ec0FPxkQKmNqeJDC8Owg7shTp1j2IlZwcNtE2ks693urURbYKPPDG1jWh\ntDcgdFiYiXPa1FKNH0leDP0DnCuBSMGrh1fcqUUfFq9ETYdkruABJEBtXvz4uinp\n/JC7d081ZUYtnaMUi4EynXsX04CS/YCy/2PmTdpQbdHO2X4514wFAgMBAAEwDQYJ\nKoZIhvcNAQELBQADggEBADtCr6TrE28++zG8fEfShdNp5c3TNiAUOBYDmm2V8AoE\nYOUyyhkmSIMi9szI0MPMtKdBLuChArZIm2SUYEjiVETC3JJVub0lbweDG18p4TBI\nhl0pgbtbxLoPqmunS3/isBp4RqgiZutM5zHu3+QB+whFYNwwWc/25jW/4tAvjYmv\n1aYUspd5bWttMmLoQB33uXRGfWizv906RhQ88REH+VtZ8To4CDL0BMTa/IiRGMlE\nAxTurkFqpg29QQG/IjX2wuHJOSJ9dDfKWrn4qEMvRlEpNod6sMV9cWZ+VD+1FBCs\nRpMlmN7D9S+GJdUz0W2iCtblq+oaeYuEz5JniROoFkk=\n-----END CERTIFICATE-----",
+        "serverKeyPEM": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDCQMbuS2EYw6wN\nsCyc3ZxlKoXqMr9P8ZsfKKkxC1GjuAhvgYmKZpQZ8nHP/YJMlv1xAH1bqr6gDjC8\nYSPaYfO+SR93cJmBcBTqcfilhagBUlCdk+r5qjCHT6RL1cNhdSSCCkUOE+PhRhle\noIgCeLrHMFnGeTKrogSqmIJuUM/ec0FPxkQKmNqeJDC8Owg7shTp1j2IlZwcNtE2\nks693urURbYKPPDG1jWhtDcgdFiYiXPa1FKNH0leDP0DnCuBSMGrh1fcqUUfFq9E\nTYdkruABJEBtXvz4uinp/JC7d081ZUYtnaMUi4EynXsX04CS/YCy/2PmTdpQbdHO\n2X4514wFAgMBAAECggEAB/+X0VcMO/NOoc+nvpvHZUj/c5m8U+PcYceQU+Ml7OpW\nepToX2kC3yCi/A/xrgqni+AbyUr6B2geLJuJWOQgn6yuHYJm57QAQHkJ5nLe7JMB\nm8Nr8PTHg8LNPowiO+CRbMNUfZRnFS8IO2O7xfJHqoz8nVX/Np74tzeJY1ZzgLLG\ntshi76gaYmIkpnn46X8NXNA1SusBgeMmUhtr9NRI5KGabihwEWEPYrFgWmq/KHvz\nA+AFSHvxqwO7tbfLhj9owe2LA7afGT6DHf16xv11Z5K0fzzAaq9oHhkmgm9CBchX\nyGgj2cxbuEpAp9sE00eMYZjRlmy7jiQtSRCqhYtsQQKBgQDGDr0P4HsuE5IFgjhu\nCiNKj9VTsFZO13vETivB39dEXyW6PgZP/Wrbvw4cCV0Y3+ntp8ej2ilFMbzq0FpU\ndMkHMAcK5pJvOySEvMbf8I0aZlFo5ueEnEH3VgN4PBudrIEAFCP+Q+Z5HJ+ZcHt7\nXOm+mLvAgKvqp3SuJWdAp+Uy5QKBgQD7FRpOfHULB9dG0lsTrKbaTVUA4rOp9tRc\nPXnH088KaI4qlw17SLgrL8BVEug8JEmfKo41gV8FLFJ4C43+454JwnsixLKgNUjL\nF6sCq/BnQYr5HSPglES0BjctH4RA4C69Fk3u0Un1AOLllJdHozv3f80JTx5bWL2d\n7FUboo3CoQKBgEngqYlIlOolBqzjXCU/xtZDPLHQ7wDNxC7/cbcJxgSM8Ue9ZyFj\nR/7cD2lJ3N4wd9PcZ82ozQgwe2Wjfm5OecYilh3sz+aJyx9wQ0a5NgkI7YkRyH5g\nwwJ9pSGuWibAeAYNfTeVIF1A3g+gM49aox4jXrV5yabn+9ARx6gIeKg5AoGAEp2W\n7LjHiMDVEjgoboX/fPH82mr0fSaCyi/4pnsqv4/O8pNueXSDyxfoP6Z+N29NUhK6\npnboD58goivhJEPGBN05efNxdvVcZ0pi8HjFAzLV1fB2J4F2so4/awYKLTEx5e0Q\nbCNyQ0sEh5cDvFj66je8gPMvwgALVvkdukXMEuECgYBITCt1VrEGbmPL9Yy2K/vU\nQTvShkExpL2mmi59T1cUg5R2aNR7Y6sgP/6UQ1bQAYNG6uv5+zFoC3YFQ9ApTqnX\nnap1Izo3WZ1wF0lNPJI8OnaEQC2Bxo7uV4xPVlVNIwnXs1+IY/eyH2wwWTeJtunS\nfGJMjeQZ8Y4KsvCxxkAufQ==\n-----END PRIVATE KEY-----",
+        "eapolVersion": 3,
+        "macsec": true
+      }
+    }
+  ],
+  "bridges": [
+    {
+      "logicalLabel": "bridge0",
+      "ports": ["eveport0"]
+    }
+  ],
+  "networks": [
+    {
+      "logicalLabel": "network0",
+      "bridge": "bridge0",
+      "subnet": "172.22.12.0/24",
+      "gwIP": "172.22.12.1",
+      "dhcp": {
+        "enable": true,
+        "ipRange": {
+          "fromIP": "172.22.12.10",
+          "toIP": "172.22.12.20"
+        },
+        "domainName": "sdn",
+        "privateDNS": ["my-dns-server"]
+      },
+      "router": {
+        "outsideReachability": true,
+        "reachableEndpoints": ["my-dns-server"]
+      }
+    }
+  ],
+  "endpoints": {
+    "dnsServers": [
+      {
+        "logicalLabel": "my-dns-server",
+        "fqdn": "my-dns-server.sdn",
+        "subnet": "10.16.16.0/24",
+        "ip": "10.16.16.25",
+        "staticEntries": [
+          {
+            "fqdn": "mydomain.adam",
+            "ip": "adam-ip"
+          }
+        ],
+        "upstreamServers": [
+          "1.1.1.1",
+          "8.8.8.8"
+        ]
+      }
+    ]
+  }
+}

@@ -38,4 +38,6 @@ const (
 	HTTPServerTypename = "HTTP-Server"
 	// TrafficControlTypename : typename for TC rules applied to physical interface.
 	TrafficControlTypename = "Traffic-Control"
+	// PNACTypename : typename for PNAC config applied to a physical interface.
+	PNACTypename = "PNAC"
 )

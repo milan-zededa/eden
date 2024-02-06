@@ -98,6 +98,106 @@ type Port struct {
 	EVEConnect EVEConnect `json:"eveConnect"`
 	// TC : traffic control.
 	TC TrafficControl `json:"trafficControl"`
+	// PNAC : Port-based network access control (IEEE 802.1X).
+	// Leave undefined (nil) to disable access control.
+	PNAC *PNAC `json:"pnac"`
+}
+
+// EAPMethod : Extensible Authentication Protocol method.
+type EAPMethod uint8
+
+const (
+	// EAPMethodTLS : EAP-TLS (transport layer security) uses a secure TLS connection
+	// to authenticate clients by using certificates. To use EAP-TLS, you need TLS client
+	// certificates for each network client and a server certificate for the server.
+	// Note that the same certificate authority (CA) must have issued the certificates.
+	EAPMethodTLS EAPMethod = iota
+	// EAPMethodTTLS_PAP : EAP-TTLS/PAP uses a secure TLS connection (TTLS = tunneled transport
+	// layer security) and authenticates clients using the Password Authentication Protocol (PAP).
+	// To use EAP-TTLS, you need a TLS server certificate.
+	EAPMethodTTLS_PAP
+	// EAPMethodTTLS_CHAP : EAP-TTLS/CHAP uses a secure TLS connection (TTLS = tunneled transport
+	// layer security) and authenticates clients using the Challenge Handshake Authentication
+	// Protocol (CHAP).
+	// To use EAP-TTLS, you need a TLS server certificate.
+	EAPMethodTTLS_CHAP
+	// EAPMethodTTLS_MSCHAPV2 : EAP-TTLS/MSCHAP uses a secure TLS connection (TTLS = tunneled
+	// transport layer security) and authenticates clients using the Microsoft Challenge Handshake
+	// Authentication Protocol version 2 (MS-CHAPv2).
+	// To use EAP-TTLS, you need a TLS server certificate.
+	EAPMethodTTLS_MSCHAPV2
+)
+
+// IsTTLS returns true if the EAP method is one of the TTLS variants.
+func (m EAPMethod) IsTTLS() bool {
+	switch m {
+	case EAPMethodTTLS_PAP, EAPMethodTTLS_CHAP, EAPMethodTTLS_MSCHAPV2:
+		return true
+	default:
+		return false
+	}
+}
+
+// EAPMethodToString : convert EAPMethod to string representation used in JSON.
+var EAPMethodToString = map[EAPMethod]string{
+	EAPMethodTLS:           "EAP-TLS",
+	EAPMethodTTLS_PAP:      "EAP-TTLS/PAP",
+	EAPMethodTTLS_CHAP:     "EAP-TTLS/CHAP",
+	EAPMethodTTLS_MSCHAPV2: "EAP-TTLS/MSCHAPV2",
+}
+
+// EAPMethodToID : get EAPMethod from a string representation.
+var EAPMethodToID = map[string]EAPMethod{
+	"":                  EAPMethodTLS, // default value
+	"EAP-TLS":           EAPMethodTLS,
+	"EAP-TTLS/PAP":      EAPMethodTTLS_PAP,
+	"EAP-TTLS/CHAP":     EAPMethodTTLS_CHAP,
+	"EAP-TTLS/MSCHAPV2": EAPMethodTTLS_MSCHAPV2,
+}
+
+// MarshalJSON marshals the enum as a quoted json string.
+func (m EAPMethod) MarshalJSON() ([]byte, error) {
+	buffer := bytes.NewBufferString(`"`)
+	buffer.WriteString(EAPMethodToString[m])
+	buffer.WriteString(`"`)
+	return buffer.Bytes(), nil
+}
+
+// UnmarshalJSON un-marshals a quoted json string to the enum value.
+func (m *EAPMethod) UnmarshalJSON(b []byte) error {
+	var j string
+	if err := json.Unmarshal(b, &j); err != nil {
+		return err
+	}
+	*m = EAPMethodToID[j]
+	return nil
+}
+
+// PNAC : Port-based network access control (IEEE 802.1X).
+type PNAC struct {
+	// EAPMethod : EAP method to use for client authentication.
+	EAPMethod EAPMethod `json:"eapMethod"`
+	// EAPReauthPeriod : EAP re-authentication period in seconds.
+	// By default (zero value), re-authentication is disabled.
+	EAPReauthPeriod uint32 `json:"eapReauthPeriod"`
+	// CACertPEM : certificate of the certificate authority in the PEM format.
+	CACertPEM string `json:"caCertPEM"`
+	// ServerCertPEM : Server certificate in the PEM format.
+	ServerCertPEM string `json:"serverCertPEM"`
+	// ServerKeyPEM : Server key in the PEM format.
+	ServerKeyPEM string `json:"serverKeyPEM"`
+	// EAPoLVersion : EAPoL (Extensible Authentication Protocol over LAN) version.
+	// The value should be one of:
+	// -> 0 (undefined): by default version 2 is assumed (IEEE 802.1X-2004)
+	// -> 1: EAPoL Version 1.0, specified in IEEE 802.1X-2001
+	// -> 2: EAPoL Version 2.0, specified in IEEE 802.1X-2004
+	// -> 3: enable EAPoL extensions defined in IEEE 802.1X-2010
+	EAPoLVersion uint8 `json:"eapolVersion"`
+	// MACsec : enable to secure communication on the port using MACsec (IEEE 802.1AE).
+	MACsec bool `json:"macsec"`
+	// Password that the client should authenticate itself with inside the tunnel
+	// of EAP-TTLS/* methods.
+	Password string `json:"password"`
 }
 
 // TrafficControl allows to control traffic going through a port.

@@ -1,6 +1,6 @@
 FROM lfedge/eve-alpine:8.12.0 as build
 
-ENV BUILD_PKGS git gcc go make wget libc-dev linux-headers
+ENV BUILD_PKGS git gcc go make wget libc-dev linux-headers openssl-dev
 ENV PKGS bash iptables ip6tables iproute2 dhcpcd ipset curl radvd ethtool jq tcpdump \
          strace openssh-client openssh-server vim ca-certificates
 RUN eve-alpine-deploy.sh
@@ -29,6 +29,18 @@ RUN wget https://thekelleys.org.uk/dnsmasq/dnsmasq-${DNSMASQ_VERSION}.tar.gz && 
 #    cd ntp-${NTP_VERSION}.${NTP_VERSION_PATCH} && \
 #    ./configure --prefix=/out && \
 #    make && make install
+
+ARG HOSTAPD_VERSION=2.10
+RUN mkdir -p /hostapd
+WORKDIR /hostapd
+RUN wget  https://w1.fi/releases/hostapd-${HOSTAPD_VERSION}.tar.gz && \
+    tar xvzf hostapd-${HOSTAPD_VERSION}.tar.gz && \
+    cd hostapd-${HOSTAPD_VERSION}/hostapd && \
+    cp defconfig .config && \
+    sed -i 's/CONFIG_DRIVER_NL80211=y/#CONFIG_DRIVER_NL80211=n/' .config && \
+    sed -i 's/#CONFIG_DRIVER_WIRED=y/CONFIG_DRIVER_WIRED=y/' .config && \
+    sed -i 's/CONFIG_DRIVER_HOSTAP=y/#CONFIG_DRIVER_HOSTAP=n/' .config && \
+    make install DESTDIR=/out
 
 WORKDIR /out
 RUN mkdir -p ./etc/ssh ./root/.ssh && chmod 0700 ./root/.ssh

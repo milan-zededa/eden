@@ -21,6 +21,7 @@ const (
 	configGraphName    = "SDN-Config"
 	physicalIfsSG      = "Physical-Interfaces"
 	trafficControlSG   = "Traffic-Control"
+	pnacSG             = "PNAC"
 	hostConnectivitySG = "Host-Connectivity"
 	bridgesSG          = "Bridges"
 	firewallSG         = "Firewall"
@@ -94,6 +95,7 @@ func (a *agent) updateIntendedState() {
 	a.intendedState.PutSubGraph(a.getIntendedPhysIfs())
 	a.intendedState.PutSubGraph(a.getIntendedHostConnectivity())
 	a.intendedState.PutSubGraph(a.getIntendedTrafficControl())
+	a.intendedState.PutSubGraph(a.getIntendedPNAC())
 	a.intendedState.PutSubGraph(a.getIntendedBridges())
 	a.intendedState.PutSubGraph(a.getIntendedFirewall())
 	for _, network := range a.netModel.Networks {
@@ -197,6 +199,26 @@ func (a *agent) getIntendedTrafficControl() dg.Graph {
 		mac, _ := net.ParseMAC(port.MAC)
 		intendedCfg.PutItem(configitems.TrafficControl{
 			TrafficControl: port.TC,
+			PhysIf: configitems.PhysIf{
+				LogicalLabel: port.LogicalLabel,
+				MAC:          mac,
+			},
+		}, nil)
+	}
+	return intendedCfg
+}
+
+func (a *agent) getIntendedPNAC() dg.Graph {
+	graphArgs := dg.InitArgs{Name: pnacSG}
+	intendedCfg := dg.New(graphArgs)
+	for _, port := range a.netModel.Ports {
+		if port.PNAC == nil {
+			continue
+		}
+		// MAC address is already validated
+		mac, _ := net.ParseMAC(port.MAC)
+		intendedCfg.PutItem(configitems.PNAC{
+			PNAC: *port.PNAC,
 			PhysIf: configitems.PhysIf{
 				LogicalLabel: port.LogicalLabel,
 				MAC:          mac,

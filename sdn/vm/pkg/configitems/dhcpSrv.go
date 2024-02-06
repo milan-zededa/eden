@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"path/filepath"
@@ -310,13 +311,15 @@ func startDnsmasq(srvName, netNamespace string) error {
 	}
 	pidFile := dnsmasqPidFile(srvName)
 	// Do not run in background - dnsmasq will detach itself.
-	return startProcess(netNamespace, cmd, args, pidFile, dnsmasqStartTimeout, false)
+	return startProcess(netNamespace, cmd, args, nil, pidFile, dnsmasqStartTimeout, false)
 }
 
-func startProcess(netNamespace, cmd string, args []string, pidFile string,
-	timeout time.Duration, background bool) error {
+func startProcess(netNamespace, cmd string, args []string, output io.Writer,
+	pidFile string, timeout time.Duration, background bool) error {
 	startTime := time.Now()
 	execCmd := namespacedCmd(netNamespace, cmd, args...)
+	execCmd.Stdout = output
+	execCmd.Stderr = output
 	if background {
 		err := execCmd.Start()
 		if err != nil {

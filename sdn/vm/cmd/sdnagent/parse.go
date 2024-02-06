@@ -136,6 +136,56 @@ func (a *agent) validatePorts(netModel *parsedNetModel) (err error) {
 			}
 		}
 	}
+
+	// Verify 802.1x config.
+	for _, port := range netModel.Ports {
+		pnac := port.PNAC
+		if pnac == nil {
+			continue
+		}
+		// All supported EAP methods require CA and server certificates.
+		if pnac.CACertPEM == "" {
+			err = fmt.Errorf("port %s PNAC config is missing CA certificate",
+				port.LogicalLabel)
+			return
+		}
+		err = a.validateCertPEM(pnac.CACertPEM, "", true, true)
+		if err != nil {
+			return
+		}
+		if pnac.ServerCertPEM == "" {
+			err = fmt.Errorf("port %s PNAC config is missing server certificate",
+				port.LogicalLabel)
+			return
+		}
+		if pnac.ServerKeyPEM == "" {
+			err = fmt.Errorf("port %s PNAC config is missing server key",
+				port.LogicalLabel)
+			return
+		}
+		err = a.validateCertPEM(pnac.ServerCertPEM, pnac.ServerKeyPEM, false, false)
+		if err != nil {
+			return
+		}
+		// All supported EAP-TTLS methods use password-based authentication for the phase 2.
+		// (i.e. inside the tunnel)
+		if pnac.EAPMethod.IsTTLS() && pnac.Password == "" {
+			err = fmt.Errorf("port %s PNAC config is missing client password",
+				port.LogicalLabel)
+			return
+		}
+		// EAPoL version should be between 0 and 3 (including).
+		if pnac.EAPoLVersion > 3 {
+			err = fmt.Errorf("port %s PNAC config has invalid EAPoL version (%d)",
+				port.LogicalLabel, pnac.EAPoLVersion)
+			return
+		}
+		if pnac.EAPoLVersion > 0 && pnac.EAPoLVersion != 3 && pnac.MACsec {
+			err = fmt.Errorf("port %s PNAC config has MACsec enabled which requires "+
+				"EAPoL version 3", port.LogicalLabel)
+			return
+		}
+	}
 	return nil
 }
 
@@ -335,7 +385,8 @@ func (a *agent) validateEndpoints(netModel *parsedNetModel) (err error) {
 			}
 		}
 		if proxy.CACertPEM != "" {
-			if err = a.validateCertPEM(proxy.CACertPEM, proxy.CAKeyPEM, true); err != nil {
+			err = a.validateCertPEM(proxy.CACertPEM, proxy.CAKeyPEM, true, false)
+			if err != nil {
 				return
 			}
 		}
@@ -360,7 +411,8 @@ func (a *agent) validateEndpoints(netModel *parsedNetModel) (err error) {
 			}
 		}
 		if proxy.CACertPEM != "" {
-			if err = a.validateCertPEM(proxy.CACertPEM, proxy.CAKeyPEM, true); err != nil {
+			err = a.validateCertPEM(proxy.CACertPEM, proxy.CAKeyPEM, true, false)
+			if err != nil {
 				return
 			}
 		}
@@ -390,7 +442,8 @@ func (a *agent) validateEndpoints(netModel *parsedNetModel) (err error) {
 			}
 		}
 		if httpSrv.CertPEM != "" {
-			if err = a.validateCertPEM(httpSrv.CertPEM, httpSrv.KeyPEM, false); err != nil {
+			err = a.validateCertPEM(httpSrv.CertPEM, httpSrv.KeyPEM, false, false)
+			if err != nil {
 				return
 			}
 		} else if httpSrv.HTTPSPort != 0 {
@@ -504,7 +557,7 @@ func (a *agent) validateHostConfig(netModel *parsedNetModel) (err error) {
 	return nil
 }
 
-func (a *agent) validateCertPEM(certPem, keyPem string, isCA bool) error {
+func (a *agent) validateCertPEM(certPem, keyPem string, isCA, noKey bool) error {
 	// Check that certificate can be parsed.
 	block, _ := pem.Decode([]byte(certPem))
 	if block == nil {
@@ -518,6 +571,9 @@ func (a *agent) validateCertPEM(certPem, keyPem string, isCA bool) error {
 		return fmt.Errorf("invalid certificate purpose (IsCA=%t)", cert.IsCA)
 	}
 	// Check that private key can be parsed.
+	if noKey {
+		return nil
+	}
 	block, _ = pem.Decode([]byte(keyPem))
 	if block == nil {
 		return errors.New("failed to decode PEM private key")

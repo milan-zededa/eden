@@ -281,7 +281,7 @@ func startGoproxy(proxyName, netNamespace string) error {
 		cfgPath,
 	}
 	pidFile := goproxyPidFile(proxyName)
-	return startProcess(netNamespace, cmd, args, pidFile, goproxyStartTimeout, true)
+	return startProcess(netNamespace, cmd, args, nil, pidFile, goproxyStartTimeout, true)
 }
 
 func stopGoproxy(proxyName string) error {
