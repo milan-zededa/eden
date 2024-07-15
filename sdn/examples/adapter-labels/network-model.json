@@ -48,7 +48,8 @@
           "toIP": "172.22.10.20"
         },
         "domainName": "sdn",
-        "privateDNS": ["dns-server0"]
+        "privateDNS": ["dns-server0"],
+        "publicNTP": "132.163.96.2"
       },
       "router": {
         "outsideReachability": true,
@@ -81,7 +82,8 @@
         },
         "domainName": "sdn",
         "privateDNS": ["dns-server1"],
-        "withoutDefaultRoute": false
+        "withoutDefaultRoute": false,
+        "publicNTP": "128.138.140.44"
       },
       "router": {
         "outsideReachability": false,
