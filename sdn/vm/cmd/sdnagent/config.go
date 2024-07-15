@@ -399,19 +399,6 @@ func (a *agent) getIntendedNetwork(network api.Network) dg.Graph {
 			DNSServers:     dnsServers,
 			NTPServer:      ntpServer,
 			WPAD:           network.DHCP.WPAD,
-			StaticRoutes: []configitems.IPRoute{
-				// When user is accessing EVE using "sdn fwd" command, the source
-				// IP is from the VETH connecting the network with the SDN VM router.
-				// Make sure that EVE has this IP properly routed by propagating
-				// classless route for it via DHCP.
-				{
-					DstNetwork: &net.IPNet{
-						IP:   inIP.IP.Mask(inIP.Mask),
-						Mask: inIP.Mask,
-					},
-					Gateway: gwIP.IP,
-				},
-			},
 		}, nil)
 	}
 
@@ -596,6 +583,25 @@ func (a *agent) getIntendedNetwork(network api.Network) dg.Graph {
 			Rules:        dnatRules,
 		}, nil)
 	}
+
+	// When user is accessing EVE using "sdn fwd" command, the source IP
+	// is from the internal IP subnet.
+	// Make sure that the IP address is S-NATed before sending packets to EVE.
+	// Otherwise, the responses could be routed out via wrong EVE network ports.
+	intendedCfg.PutItem(configitems.IptablesChain{
+		NetNamespace: nsName,
+		ChainName:    "POSTROUTING",
+		Table:        "nat",
+		ForIPv6:      false,
+		RefersVeths:  []string{rtVethName},
+		Rules: []configitems.IptablesRule{
+			{
+				Args: []string{"-o", brInIfName, "-s", internalIPv4Subnet.String(),
+					"-j", "MASQUERADE"},
+				Description: "S-NAT traffic leaving SDN VM towards EVE with internal source IP",
+			},
+		},
+	}, nil)
 	return intendedCfg
 }
 
