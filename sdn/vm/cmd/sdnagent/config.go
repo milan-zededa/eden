@@ -399,6 +399,19 @@ func (a *agent) getIntendedNetwork(network api.Network) dg.Graph {
 			DNSServers:     dnsServers,
 			NTPServer:      ntpServer,
 			WPAD:           network.DHCP.WPAD,
+			StaticRoutes: []configitems.IPRoute{
+				// When user is accessing EVE using "sdn fwd" command, the source
+				// IP is from the VETH connecting the network with the SDN VM router.
+				// Make sure that EVE has this IP properly routed by propagating
+				// classless route for it via DHCP.
+				{
+					DstNetwork: &net.IPNet{
+						IP:   inIP.IP.Mask(inIP.Mask),
+						Mask: inIP.Mask,
+					},
+					Gateway: gwIP.IP,
+				},
+			},
 		}, nil)
 	}
 

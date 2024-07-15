@@ -62,6 +62,8 @@ type DhcpServer struct {
 	// The client will learn the PAC file location using the DHCP option 252.
 	// Optional argument, leave empty to disable.
 	WPAD string
+	// StaticRoutes : IP routes to pass to the DHCP client of EVE.
+	StaticRoutes []IPRoute
 	// TODO: Netboot
 	//  Example dnsmasq.conf:
 	//    # use custom tftp-server instead machine running dnsmasq
@@ -86,6 +88,16 @@ type IPRange struct {
 type MACToIP struct {
 	MAC net.HardwareAddr
 	IP  net.IP
+}
+
+// IPRoute : single IP route entry.
+type IPRoute struct {
+	// Destination network.
+	// Cannot be nil.
+	DstNetwork *net.IPNet
+	// Gateway IP address.
+	// Cannot be nil.
+	Gateway net.IP
 }
 
 // Name
@@ -117,7 +129,8 @@ func (s DhcpServer) Equal(other depgraph.Item) bool {
 		s.DomainName == s2.DomainName &&
 		equalIPLists(s.DNSServers, s2.DNSServers) &&
 		s.NTPServer == s2.NTPServer &&
-		s.WPAD == s2.WPAD
+		s.WPAD == s2.WPAD &&
+		equalIPRoutes(s.StaticRoutes, s2.StaticRoutes)
 }
 
 // External returns false.
@@ -244,6 +257,11 @@ func (c *DhcpServerConfigurator) createDnsmasqConfFile(server DhcpServer) error 
 	if server.WPAD != "" {
 		file.WriteString(fmt.Sprintf("dhcp-option=252,%s\n", server.WPAD))
 	}
+	// Classless static IP routes.
+	if len(server.StaticRoutes) > 0 {
+		file.WriteString(fmt.Sprintf("dhcp-option=option:classless-static-route,%s\n",
+			c.formatRoutesForConfig(server.StaticRoutes)))
+	}
 	if err = file.Sync(); err != nil {
 		err = fmt.Errorf("failed to sync config file %s: %w", cfgPath, err)
 		log.Error(err)
@@ -279,6 +297,15 @@ func (c *DhcpServerConfigurator) Delete(ctx context.Context, item depgraph.Item)
 // NeedsRecreate always returns true - Modify is not implemented.
 func (c *DhcpServerConfigurator) NeedsRecreate(oldItem, newItem depgraph.Item) (recreate bool) {
 	return true
+}
+
+func (c *DhcpServerConfigurator) formatRoutesForConfig(routes []IPRoute) string {
+	var cfgEntries []string
+	for _, route := range routes {
+		entry := fmt.Sprintf("%s,%s", route.DstNetwork, route.Gateway)
+		cfgEntries = append(cfgEntries, entry)
+	}
+	return strings.Join(cfgEntries, ",")
 }
 
 func dnsmasqConfigPath(srvName string) string {
@@ -474,6 +501,19 @@ func equalStaticEntries(list1, list2 []MACToIP) bool {
 	for i := range list1 {
 		if !list1[i].IP.Equal(list2[i].IP) ||
 			!bytes.Equal(list1[i].MAC, list2[i].MAC) {
+			return false
+		}
+	}
+	return true
+}
+
+func equalIPRoutes(list1, list2 []IPRoute) bool {
+	if len(list1) != len(list2) {
+		return false
+	}
+	for i := range list1 {
+		if !equalIPNets(list1[i].DstNetwork, list2[i].DstNetwork) ||
+			!list1[i].Gateway.Equal(list2[i].Gateway) {
 			return false
 		}
 	}
