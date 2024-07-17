@@ -202,9 +202,6 @@ func (exp *AppExpectation) getAcls(ni *NetInstanceExpectation) []*config.ACE {
 				}, {
 					Type:  "lport",
 					Value: strconv.Itoa(po),
-				}, {
-					Type:  "adapter",
-					Value: "portfwd",
 				}},
 				Actions: []*config.ACEAction{{
 					Portmap: true,
