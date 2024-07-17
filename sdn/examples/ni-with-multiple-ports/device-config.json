@@ -145,8 +145,7 @@
             "enableGwPing": true,
             "gwPingMaxCost": 5
           },
-          "preferLowerCost": true,
-          "preferStrongerWwanSignal": true
+          "preferLowerCost": true
         },
         {
           "destinationNetwork": "10.88.88.0/24",
@@ -158,8 +157,7 @@
               "probeAddress": "httpserver0.sdn:80"
             }
           },
-          "preferLowerCost": true,
-          "preferStrongerWwanSignal": true
+          "preferLowerCost": true
         }
       ]
     }
