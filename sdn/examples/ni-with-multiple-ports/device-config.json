@@ -155,7 +155,10 @@
             "enableGwPing": false,
             "customProbe": {
               "probeMethod": 2,
-              "probeAddress": "httpserver0.sdn:80"
+              "probeEndpoint": {
+                "host": "httpserver0.sdn",
+                "port": 80
+              }
             }
           },
           "preferLowerCost": true,

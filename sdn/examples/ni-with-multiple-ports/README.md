@@ -107,7 +107,16 @@ make clean && make build-tests
 Once deployed, check the routing table of the network instance:
 
 ```shell
-TODO
+./eden eve ssh
+eve$ ip route show table 801
+default via 172.22.10.1 dev eth0 proto static
+unreachable default proto static metric 4294967295
+10.40.40.0/24 dev eth3 proto static scope link src 10.40.40.30 metric 1009
+10.50.0.0/24 dev bn1 proto static scope link src 10.50.0.1
+10.88.88.0/24 via 172.22.10.1 dev eth0 proto static
+172.22.10.0/24 dev eth0 proto static scope link src 172.22.10.13 metric 1011
+172.28.20.0/24 dev eth1 proto static scope link src 172.28.20.10 metric 1008
+192.168.30.0/24 dev eth2 proto static scope link src 192.168.30.20 metric 1010
 ```
 
 Notice that `eth0` is selected for both the default route and the HTTP server route.
@@ -116,18 +125,65 @@ Login to the application and try to access something in the Internet (e.g. 8.8.8
 and the HTTP server:
 
 ```shell
-TODO
+eve$ eve attach-app-console 3599588a-17d3-4d02-aae1-bcefe3706cfd.1.1/cons
+app$ ping -c 3 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=252 time=17.6 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=252 time=19.2 ms
+64 bytes from 8.8.8.8: icmp_seq=3 ttl=252 time=18.2 ms
+
+--- 8.8.8.8 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2004ms
+rtt min/avg/max/mdev = 17.563/18.318/19.150/0.650 ms
+
+app$ curl httpserver0.sdn/helloworld
+Hello world from HTTP server
+```
+
+Check the external IP addresses that application will use (depending on the destination):
+
+```shell
+app$ curl http://169.254.169.254/eve/v1/network.json 2>/dev/null | jq
+{
+  "app-instance-uuid": "3599588a-17d3-4d02-aae1-bcefe3706cfd",
+  "caller-ip": "10.50.0.2:48588",
+  "device-name": "6845629e-500d-4b00-be66-801e75ba65b5",
+  "device-uuid": "6845629e-500d-4b00-be66-801e75ba65b5",
+  "enterprise-id": "",
+  "enterprise-name": "",
+  "external-ipv4": "172.22.10.13,172.28.20.10,192.168.30.20,10.40.40.30",
+  "hostname": "3599588a-17d3-4d02-aae1-bcefe3706cfd",
+  "project-name": "",
+  "project-uuid": "00000000-0000-0000-0000-000000000000"
+}
+app$ curl http://169.254.169.254/eve/v1/external_ipv4 2>/dev/null
+172.22.10.13
+172.28.20.10
+192.168.30.20
+10.40.40.30
 ```
 
 Next, simulate `eth0` losing the connectivity by changing the network model:
 
 ```shell
-TODO
+./eden sdn net-model get > net-model
+jq '(.ports[] | select(.logicalLabel == "eveport0").adminUP) = false' net-model > net-model-eth0-down
+./eden sdn net-model apply net-model-eth0-down
 ```
 
 Eventually, default route is re-routed to use `eth3` while the HTTP server route
 will use `eth2` (has lower cost than `eth3`):
 
 ```shell
-TODO
+# ssh over eth0 is not going to work, use console access:
+./eden eve console
+eve$ ip route show table 801
+default via 10.40.40.1 dev eth3 proto static
+unreachable default proto static metric 4294967295
+10.40.40.0/24 dev eth3 proto static scope link src 10.40.40.30 metric 1009
+10.50.0.0/24 dev bn1 proto static scope link src 10.50.0.1
+10.88.88.0/24 via 192.168.30.1 dev eth2 proto static
+172.22.10.0/24 dev eth0 proto static scope link src 172.22.10.13 metric 1011
+172.28.20.0/24 dev eth1 proto static scope link src 172.28.20.10 metric 1008
+192.168.30.0/24 dev eth2 proto static scope link src 192.168.30.20 metric 1010
 ```

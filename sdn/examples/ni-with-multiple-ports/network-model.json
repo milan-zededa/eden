@@ -156,7 +156,7 @@
         "paths": {
           "/helloworld": {
             "contentType": "text/plain",
-            "content": "Hello world from HTTP server no. 0\n"
+            "content": "Hello world from HTTP server\n"
           }
         }
       }
