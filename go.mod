@@ -18,7 +18,7 @@ require (
 	github.com/lf-edge/eden/eserver v0.0.0-20220711180217-6e2bfa9c3f67
 	github.com/lf-edge/eden/sdn/vm v0.0.0-00010101000000-000000000000
 	github.com/lf-edge/edge-containers v0.0.0-20240207093504-5dfda0619b80
-	github.com/lf-edge/eve-api/go v0.0.0-20240611150039-3fcdc06267ae
+	github.com/lf-edge/eve-api/go v0.0.0-20240723213520-106b1d6b72e6
 	github.com/mcuadros/go-lookup v0.0.0-20200831155250-80f87a4fa5ee
 	github.com/moby/term v0.0.0-20221205130635-1aeaba878587
 	github.com/nerd2/gexto v0.0.0-20190529073929-39468ec063f6
@@ -140,5 +140,3 @@ require (
 replace github.com/lf-edge/eden/sdn/vm => ./sdn/vm
 
 replace github.com/lf-edge/eve/libs/depgraph => github.com/lf-edge/eve/libs/depgraph v0.0.0-20220711144346-0659e3b03496
-
-replace github.com/lf-edge/eve-api/go => github.com/milan-zededa/eve-api/go v0.0.0-20240708094601-cb0293e99f07
