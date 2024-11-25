@@ -1,0 +1,190 @@
+{
+  "ports": [
+    {
+      "logicalLabel": "eveport0",
+      "adminUP": true
+    },
+    {
+      "logicalLabel": "eveport1",
+      "adminUP": true
+    },
+    {
+      "logicalLabel": "eveport2",
+      "adminUP": true
+    },
+    {
+      "logicalLabel": "eveport3",
+      "adminUP": true
+    },
+    {
+      "logicalLabel": "eveport4",
+      "adminUP": true
+    },
+    {
+      "logicalLabel": "eveport5",
+      "adminUP": true
+    }
+  ],
+  "bridges": [
+    {
+      "logicalLabel": "bridge0",
+      "ports": ["eveport0"]
+    },
+    {
+      "logicalLabel": "bridge1",
+      "ports": ["eveport1"]
+    },
+    {
+      "logicalLabel": "bridge2",
+      "ports": ["eveport2"]
+    },
+    {
+      "logicalLabel": "bridge3",
+      "ports": ["eveport3"]
+    },
+    {
+      "logicalLabel": "bridge4",
+      "ports": ["eveport4"]
+    },
+    {
+      "logicalLabel": "bridge5",
+      "ports": ["eveport5"]
+    }
+  ],
+  "networks": [
+    {
+      "logicalLabel": "network0",
+      "bridge": "bridge0",
+      "subnet": "172.22.0.0/24",
+      "gwIP": "172.22.0.1",
+      "dhcp": {
+        "enable": true,
+        "ipRange": {
+          "fromIP": "172.22.0.10",
+          "toIP": "172.22.0.20"
+        },
+        "domainName": "sdn",
+        "privateDNS": ["dns-server"]
+      },
+      "router": {
+        "outsideReachability": true,
+        "reachableEndpoints": ["dns-server"]
+      }
+    },
+    {
+      "logicalLabel": "network1",
+      "bridge": "bridge1",
+      "subnet": "172.22.1.0/24",
+      "gwIP": "172.22.1.1",
+      "dhcp": {
+        "enable": true,
+        "ipRange": {
+          "fromIP": "172.22.1.10",
+          "toIP": "172.22.1.20"
+        },
+        "domainName": "sdn",
+        "privateDNS": ["dns-server"]
+      },
+      "router": {
+        "outsideReachability": false,
+        "reachableEndpoints": ["dns-server"]
+      }
+    },
+    {
+      "logicalLabel": "network2",
+      "bridge": "bridge2",
+      "subnet": "172.22.2.0/24",
+      "gwIP": "172.22.2.1",
+      "dhcp": {
+        "enable": true,
+        "ipRange": {
+          "fromIP": "172.22.2.10",
+          "toIP": "172.22.2.20"
+        },
+        "domainName": "sdn",
+        "privateDNS": ["dns-server"]
+      },
+      "router": {
+        "outsideReachability": false,
+        "reachableEndpoints": ["dns-server"]
+      }
+    },
+    {
+      "logicalLabel": "network3",
+      "bridge": "bridge3",
+      "subnet": "172.22.3.0/24",
+      "gwIP": "172.22.3.1",
+      "dhcp": {
+        "enable": true,
+        "ipRange": {
+          "fromIP": "172.22.3.10",
+          "toIP": "172.22.3.20"
+        },
+        "domainName": "sdn",
+        "privateDNS": ["dns-server"]
+      },
+      "router": {
+        "outsideReachability": false,
+        "reachableEndpoints": ["dns-server"]
+      }
+    },
+    {
+      "logicalLabel": "network4",
+      "bridge": "bridge4",
+      "subnet": "172.22.4.0/24",
+      "gwIP": "172.22.4.1",
+      "dhcp": {
+        "enable": true,
+        "ipRange": {
+          "fromIP": "172.22.4.10",
+          "toIP": "172.22.4.20"
+        },
+        "domainName": "sdn",
+        "privateDNS": ["dns-server"]
+      },
+      "router": {
+        "outsideReachability": false,
+        "reachableEndpoints": ["dns-server"]
+      }
+    },
+    {
+      "logicalLabel": "network5",
+      "bridge": "bridge5",
+      "subnet": "172.22.5.0/24",
+      "gwIP": "172.22.5.1",
+      "dhcp": {
+        "enable": true,
+        "ipRange": {
+          "fromIP": "172.22.5.10",
+          "toIP": "172.22.5.20"
+        },
+        "domainName": "sdn",
+        "privateDNS": ["dns-server"]
+      },
+      "router": {
+        "outsideReachability": false,
+        "reachableEndpoints": ["dns-server"]
+      }
+    }
+  ],
+  "endpoints": {
+    "dnsServers": [
+      {
+        "logicalLabel": "dns-server",
+        "fqdn": "mdns-server.sdn",
+        "subnet": "10.16.16.0/24",
+        "ip": "10.16.16.25",
+        "staticEntries": [
+          {
+            "fqdn": "mydomain.adam",
+            "ip": "adam-ip"
+          }
+        ],
+        "upstreamServers": [
+          "1.1.1.1",
+          "8.8.8.8"
+        ]
+      }
+    ]
+  }
+}

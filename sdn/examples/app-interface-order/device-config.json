@@ -1,0 +1,205 @@
+{
+  "deviceIoList": [
+    {
+      "ptype": 1,
+      "phylabel": "eth0",
+      "phyaddrs": {
+        "Ifname": "eth0"
+      },
+      "logicallabel": "eth0",
+      "assigngrp": "eth0",
+      "usage": 1,
+      "usagePolicy": {
+        "freeUplink": true
+      }
+    },
+    {
+      "ptype": 1,
+      "phylabel": "eth1",
+      "phyaddrs": {
+        "Ifname": "eth1"
+      },
+      "logicallabel": "eth1",
+      "assigngrp": "eth1",
+      "usage": 2,
+      "usagePolicy": {
+        "freeUplink": false
+      }
+    },
+    {
+      "ptype": 1,
+      "phylabel": "eth2",
+      "phyaddrs": {
+        "Ifname": "eth2"
+      },
+      "logicallabel": "eth2",
+      "assigngrp": "eth2",
+      "usage": 2,
+      "usagePolicy": {
+        "freeUplink": false
+      }
+    },
+    {
+      "ptype": 1,
+      "phylabel": "eth3",
+      "phyaddrs": {
+        "Ifname": "eth3"
+      },
+      "logicallabel": "eth3",
+      "assigngrp": "eth3",
+      "usage": 3,
+      "usagePolicy": {
+        "freeUplink": false
+      }
+    },
+    {
+      "ptype": 1,
+      "phylabel": "eth4",
+      "phyaddrs": {
+        "Ifname": "eth4"
+      },
+      "logicallabel": "eth4",
+      "assigngrp": "eth4",
+      "usage": 3,
+      "usagePolicy": {
+        "freeUplink": false
+      }
+    },
+    {
+      "ptype": 1,
+      "phylabel": "eth5",
+      "phyaddrs": {
+        "Ifname": "eth5"
+      },
+      "logicallabel": "eth5",
+      "assigngrp": "eth5",
+      "usage": 3,
+      "usagePolicy": {
+        "freeUplink": false
+      }
+    }
+  ],
+  "networks": [
+    {
+      "id": "6605d17b-3273-4108-8e6e-4965441ebe01",
+      "type": 4,
+      "ip": {
+        "dhcp": 4
+      }
+    },
+    {
+      "id": "edc39d26-9c60-49c5-9e98-f4f078f79c97",
+      "type": 4,
+      "ip": {
+        "dhcp": 2
+      }
+    }
+  ],
+  "systemAdapterList": [
+    {
+      "name": "eth0",
+      "uplink": true,
+      "networkUUID": "6605d17b-3273-4108-8e6e-4965441ebe01"
+    },
+    {
+      "name": "eth1",
+      "networkUUID": "6605d17b-3273-4108-8e6e-4965441ebe01"
+    },
+    {
+      "name": "eth2",
+      "networkUUID": "edc39d26-9c60-49c5-9e98-f4f078f79c97"
+    }
+  ],
+  "networkInstances": [
+    {
+      "uuidandversion": {
+        "uuid": "9ca83da9-94e8-48b4-9ae8-3f188c5c694a",
+        "version": "1"
+      },
+      "displayname": "ni-eth0",
+      "instType": 2,
+      "activate": true,
+      "port": {
+        "type": 1,
+        "name": "eth0"
+      },
+      "cfg": {},
+      "ipType": 1,
+      "ip": {
+        "subnet": "10.50.0.0/24",
+        "gateway": "10.50.0.1",
+        "dns": [
+          "10.50.0.1"
+        ],
+        "dhcpRange": {
+          "start": "10.50.0.2",
+          "end": "10.50.0.254"
+        }
+      }
+    },
+    {
+      "uuidandversion": {
+        "uuid": "dfb79e0e-ebaf-40e7-93a5-e1267a366416",
+        "version": "1"
+      },
+      "displayname": "ni-eth1",
+      "instType": 2,
+      "activate": true,
+      "port": {
+        "type": 1,
+        "name": "eth1"
+      },
+      "cfg": {},
+      "ipType": 1,
+      "ip": {
+        "subnet": "10.50.1.0/24",
+        "gateway": "10.50.1.1",
+        "dns": [
+          "10.50.1.1"
+        ],
+        "dhcpRange": {
+          "start": "10.50.1.2",
+          "end": "10.50.1.254"
+        }
+      }
+    },
+    {
+      "uuidandversion": {
+        "uuid": "207239ec-2d71-4f40-a698-c21c6422fe3d",
+        "version": "1"
+      },
+      "displayname": "ni-eth2",
+      "instType": 1,
+      "activate": true,
+      "port": {
+        "type": 1,
+        "name": "eth2"
+      },
+      "cfg": {},
+      "ipType": 1,
+      "ip": {}
+    }
+  ],
+  "configItems": [
+    {
+      "key": "newlog.allow.fastupload",
+      "value": "true"
+    },
+    {
+      "key": "timer.config.interval",
+      "value": "10"
+    },
+    {
+      "key": "timer.download.retry",
+      "value": "60"
+    },
+    {
+      "key": "debug.default.loglevel",
+      "value": "debug"
+    },
+    {
+      "key": "debug.disable.dhcp.all-ones.netmask",
+      "value": "false"
+    }
+  ]
+}

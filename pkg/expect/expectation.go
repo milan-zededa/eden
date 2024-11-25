@@ -46,7 +46,7 @@ type AppExpectation struct {
 	appVersion  string
 	appName     string
 	appLink     string
-	appAdapters []string
+	appAdapters []appAdapter
 	imageFormat string
 	cpu         uint32
 	mem         uint32
@@ -86,6 +86,11 @@ type AppExpectation struct {
 	datastoreOverride string
 	startDelay        uint32
 	pinCpus           bool
+}
+
+type appAdapter struct {
+	name      string
+	intfOrder int
 }
 
 // use provided appLink to try predict format of volume

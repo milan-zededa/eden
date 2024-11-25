@@ -113,6 +113,7 @@ func (exp *AppExpectation) createAppInstanceConfig(img *config.Image, netInstanc
 		bundle.appInstanceConfig.Fixedresources.Bootloader = "/usr/lib/xen/boot/ovmf.bin"
 	}
 	bundle.appInstanceConfig.Interfaces = []*config.NetworkAdapter{}
+	bundle.appInstanceConfig.Fixedresources.EnforceNetworkInterfaceOrder = true
 
 	//keep order of exp.netInstances
 	niUsageCounter := make(map[string]int)
@@ -123,11 +124,12 @@ func (exp *AppExpectation) createAppInstanceConfig(img *config.Image, netInstanc
 		}
 		usageCounter := niUsageCounter[ni.Displayname]
 		bundle.appInstanceConfig.Interfaces = append(bundle.appInstanceConfig.Interfaces, &config.NetworkAdapter{
-			Name:         fmt.Sprintf("%s-%d", ni.Displayname, usageCounter),
-			NetworkId:    ni.Uuidandversion.Uuid,
-			Acls:         exp.getAcls(k),
-			MacAddress:   k.mac,
-			AccessVlanId: exp.getAccessVID(k),
+			Name:           fmt.Sprintf("%s-%d", ni.Displayname, usageCounter),
+			NetworkId:      ni.Uuidandversion.Uuid,
+			Acls:           exp.getAcls(k),
+			MacAddress:     k.mac,
+			AccessVlanId:   exp.getAccessVID(k),
+			InterfaceOrder: uint32(k.appIntfOrder),
 		})
 		niUsageCounter[ni.Displayname] = usageCounter + 1
 	}
@@ -137,14 +139,15 @@ func (exp *AppExpectation) createAppInstanceConfig(img *config.Image, netInstanc
 		bundle.appInstanceConfig.Fixedresources.VncPasswd = exp.vncPassword
 	}
 	var adapters []*config.Adapter
-	for _, adapterName := range exp.appAdapters {
+	for _, adapter := range exp.appAdapters {
 		adapterType := evecommon.PhyIoType_PhyIoUSB
-		if strings.HasPrefix(adapterName, "eth") {
+		if strings.HasPrefix(adapter.name, "eth") {
 			adapterType = evecommon.PhyIoType_PhyIoNetEth
 		}
 		adapters = append(adapters, &config.Adapter{
-			Type: adapterType,
-			Name: adapterName,
+			Type:           adapterType,
+			Name:           adapter.name,
+			InterfaceOrder: uint32(adapter.intfOrder),
 		})
 	}
 	bundle.appInstanceConfig.Adapters = adapters

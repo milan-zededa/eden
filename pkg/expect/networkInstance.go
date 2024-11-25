@@ -26,6 +26,7 @@ type NetInstanceExpectation struct {
 	uplinkAdapter    string
 	staticDNSEntries map[string][]string
 	enableFlowlog    bool
+	appIntfOrder     int
 }
 
 // checkNetworkInstance checks if provided netInst match expectation

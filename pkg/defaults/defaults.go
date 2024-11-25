@@ -53,14 +53,14 @@ const (
 	DefaultRegistryPort         = 5050
 
 	//tags, versions, repos
-	DefaultEVETag               = "13.3.0" // DefaultEVETag tag for EVE image
-	DefaultAdamTag              = "0.0.57"
+	DefaultEVETag               = "test" // DefaultEVETag tag for EVE image
+	DefaultAdamTag              = "app-interface-order"
 	DefaultRedisTag             = "7"
 	DefaultRegistryTag          = "2.7"
 	DefaultProcTag              = "83cfe07"
 	DefaultMkimageTag           = "8.5.0"
 	DefaultImage                = "library/alpine"
-	DefaultAdamContainerRef     = "lfedge/adam"
+	DefaultAdamContainerRef     = "milan4zededa/adam"
 	DefaultRedisContainerRef    = "redis"
 	DefaultRegistryContainerRef = "library/registry"
 	DefaultProcContainerRef     = "lfedge/eden-processing"

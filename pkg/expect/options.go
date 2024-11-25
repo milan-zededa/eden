@@ -1,7 +1,9 @@
 package expect
 
 import (
+	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/lf-edge/eden/pkg/defaults"
@@ -91,17 +93,40 @@ func WithMetadata(metadata string) ExpectationOption {
 // WithAppAdapters assigns adapters for created apps
 func WithAppAdapters(appadapters []string) ExpectationOption {
 	return func(expectation *AppExpectation) {
-		expectation.appAdapters = appadapters
+		for _, adapter := range appadapters {
+			split := strings.Split(adapter, ":")
+			name := split[0]
+			order := 0
+			if len(split) == 2 {
+				var err error
+				order, err = strconv.Atoi(split[1])
+				if err != nil {
+					fmt.Println(err)
+				}
+			}
+			expectation.appAdapters = append(expectation.appAdapters, appAdapter{
+				name:      name,
+				intfOrder: order,
+			})
+		}
 	}
 }
 
 // AddNetInstanceNameAndPortPublish adds NetInstance with defined name and ports mapping for apps in format ["EXTERNAL_PORT:INTERNAL_PORT"]
 func AddNetInstanceNameAndPortPublish(netInstance string, portPublish []string) ExpectationOption {
 	mac := ""
+	order := 0
 	split := strings.Split(netInstance, ":")
 	name := split[0]
 	if len(split) == 7 {
 		mac = strings.Join(split[1:], ":")
+	}
+	if len(split) == 2 {
+		var err error
+		order, err = strconv.Atoi(split[1])
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 	return func(expectation *AppExpectation) {
 		expectation.netInstances = append(expectation.netInstances, &NetInstanceExpectation{
@@ -109,6 +134,7 @@ func AddNetInstanceNameAndPortPublish(netInstance string, portPublish []string) 
 			portsReceived: portPublish,
 			ports:         make(map[int]int),
 			mac:           mac,
+			appIntfOrder:  order,
 		})
 	}
 }
