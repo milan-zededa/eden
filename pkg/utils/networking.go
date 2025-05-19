@@ -90,7 +90,7 @@ func GetSubnetsNotUsed(count int) ([]IFInfo, error) {
 
 // GetIPForDockerAccess is service function to obtain IP for adam access
 // The function is filter out docker bridge
-func GetIPForDockerAccess() (ip string, err error) {
+func GetIPForDockerAccess() (ipv4, ipv6 net.IP, err error) {
 	networks, err := GetDockerNetworks()
 	if err != nil {
 		log.Errorf("GetDockerNetworks: %s", err)
@@ -102,21 +102,26 @@ func GetIPForDockerAccess() (ip string, err error) {
 out:
 	for _, a := range addrs {
 		if ipnet, ok := a.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
-			if ipnet.IP.To4() != nil {
-				for _, el := range networks {
-					if el.Contains(ipnet.IP) {
-						continue out
-					}
+			for _, el := range networks {
+				if el.Contains(ipnet.IP) {
+					continue out
 				}
-				ip = ipnet.IP.String()
+			}
+			if ipv4 == nil && ipnet.IP.To4() != nil {
+				ipv4 = ipnet.IP.To4()
+			}
+			if ipv6 == nil && ipnet.IP.To4() == nil {
+				ipv6 = ipnet.IP.To16()
+			}
+			if ipv4 != nil && ipv6 != nil {
 				break
 			}
 		}
 	}
-	if ip == "" {
-		return "", errors.New("no IP found")
+	if ipv4 == nil && ipv6 == nil {
+		return ipv4, ipv6, errors.New("no IP found")
 	}
-	return ip, nil
+	return ipv4, ipv6, nil
 }
 
 // ResolveURL concatenate parts of url

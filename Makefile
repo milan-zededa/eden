@@ -72,7 +72,7 @@ LINUXKIT_SOURCE=https://github.com/linuxkit/linuxkit.git
 
 .DEFAULT_GOAL := help
 
-clean: config stop
+clean: stop
 	make -C tests DEBUG=$(DEBUG) ARCH=$(ARCH) OS=$(OS) WORKDIR=$(WORKDIR) clean
 	$(LOCALBIN) clean --current-context=false
 	rm -rf $(LOCALBIN) $(BINDIR)/$(BIN) $(LOCALTESTBIN) $(WORKDIR)
