@@ -1,0 +1,13 @@
+diff --git a/sdn/examples/edge-sync/network-model.json b/sdn/examples/edge-sync/network-model.json
+index 3f71625..f56248f 100644
+--- a/sdn/examples/edge-sync/network-model.json
++++ b/sdn/examples/edge-sync/network-model.json
+@@ -120,7 +120,7 @@
+       },
+       {
+         "srcSubnet": "172.22.12.0/24",
+-        "action": "allow"
++        "action": "drop"
+       }
+     ]
+   }
