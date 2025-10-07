@@ -20,6 +20,10 @@ inputs:
     type: string
   require_virtualization:
     type: bool
+  start_eve:
+    type: bool
+    required: false
+    default: true
 
 runs:
   using: 'composite'
@@ -119,6 +123,7 @@ runs:
       working-directory: "./eden"
 
     - name: Start and Onboard
+      if: ${{ inputs.start_eve }}
       run: |
         ./eden start -v debug
         ./eden eve onboard -v debug
